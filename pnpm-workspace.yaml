@@ -1,0 +1,11 @@
+packages:
+  - 'apps/*'
+  - 'packages/*'
+
+allowBuilds:
+  argon2: true
+  aws-sdk: true
+  esbuild: true
+  msgpackr-extract: true
+  puppeteer: true
+  unrs-resolver: true

@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-orbitron: 'Orbitron', sans-serif;
+    --font-inter: 'Inter', sans-serif;
+    --font-jetbrains-mono: 'JetBrains Mono', monospace;
+  }
+
+  body {
+    background-color: #06080D;
+    color: #E8EAF0;
+    font-family: var(--font-inter);
+    overflow-x: hidden;
+  }
+}
+
+@layer components {
+  /* Orbital Glass Panel Material Classes (PXD §15) */
+  .glass-deep {
+    background: rgba(13, 17, 23, 0.80);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.40);
+  }
+
+  .glass-mid {
+    background: rgba(28, 35, 51, 0.72);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.30);
+  }
+
+  .glass-light {
+    background: rgba(45, 58, 82, 0.60);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.20);
+  }
+
+  .glass-btn-primary {
+    background: #E88C30;
+    color: #E8EAF0;
+    font-family: var(--font-orbitron);
+    font-weight: 700;
+    transition: all 0.2s ease-in-out;
+  }
+
+  .glass-btn-primary:hover:not(:disabled) {
+    background: #F5A042;
+    box-shadow: 0 0 12px rgba(232, 140, 48, 0.4);
+  }
+
+  .glass-btn-primary:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+
+  .glass-btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .glass-input {
+    background: rgba(13, 17, 23, 0.5);
+    border: 1px solid #2A3547;
+    color: #E8EAF0;
+    font-family: var(--font-inter);
+    transition: all 0.2s ease-in-out;
+  }
+
+  .glass-input:focus {
+    outline: none;
+    border-color: #3D5080;
+    box-shadow: 0 0 8px rgba(61, 80, 128, 0.3);
+  }
+}

@@ -1,0 +1,110 @@
+services:
+  # ============================================================
+  # PostgreSQL 16 + PostGIS 3.4
+  # ============================================================
+  postgres:
+    image: postgis/postgis:16-3.4-alpine
+    container_name: satmss_postgres
+    environment:
+      POSTGRES_USER: satmss
+      POSTGRES_PASSWORD: satmss_local_password
+      POSTGRES_DB: satmss
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infrastructure/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U satmss -d satmss"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+  # ============================================================
+  # Redis 7
+  # ============================================================
+  redis:
+    image: redis:7-alpine
+    container_name: satmss_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # ============================================================
+  # MinIO — S3-compatible Object Storage
+  # ============================================================
+  minio:
+    image: minio/minio:latest
+    container_name: satmss_minio
+    environment:
+      MINIO_ROOT_USER: satmss_minio_access
+      MINIO_ROOT_PASSWORD: satmss_minio_secret_key_change_in_prod
+    ports:
+      - "9000:9000"   # API
+      - "9001:9001"   # Console
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    restart: unless-stopped
+
+  # ============================================================
+  # MinIO Init — creates buckets on first startup
+  # ============================================================
+  minio-init:
+    image: minio/mc:latest
+    container_name: satmss_minio_init
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+        mc alias set local http://minio:9000 satmss_minio_access satmss_minio_secret_key_change_in_prod;
+        mc mb --ignore-existing local/satmss-imagery;
+        mc mb --ignore-existing local/satmss-exports;
+        mc mb --ignore-existing local/satmss-reports;
+        mc policy set private local/satmss-imagery;
+        mc policy set private local/satmss-exports;
+        mc policy set private local/satmss-reports;
+        echo 'MinIO buckets initialized.';
+        exit 0;
+      "
+    restart: "no"
+
+  # ============================================================
+  # Nginx — Reverse Proxy
+  # ============================================================
+  nginx:
+    image: nginx:alpine
+    container_name: satmss_nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./infrastructure/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - postgres
+      - redis
+      - minio
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  minio_data:
+    driver: local

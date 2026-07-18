@@ -115,20 +115,40 @@ sat-mss/
 
 ---
 
-# 🛠 Tech Stack
+# 🛠 Technology Stack
 
-## Frontend
+## 🐍 AI & Geospatial (Core)
 
-- Next.js
-- React
-- TypeScript
-- TailwindCSS
-- Zustand
-- React Query
+- Python
+- FastAPI
+- Google Earth Engine
+- GDAL
+- Rasterio
+- GeoPandas
+- Shapely
+- PyProj
+- NumPy
+- OpenCV
+- Scikit-learn
+- PyTorch *(planned)*
+- TorchGeo *(planned)*
 
 ---
 
-## Backend
+## 🌍 Remote Sensing
+
+- Sentinel-2
+- Sentinel-1
+- NDVI
+- NDWI
+- Land Cover Analysis
+- Change Detection
+- GeoJSON
+- PostGIS
+
+---
+
+## ⚙ Backend
 
 - Express.js
 - TypeScript
@@ -138,32 +158,33 @@ sat-mss/
 
 ---
 
-## Database
+## 🎨 Frontend
+
+- Next.js
+- React
+- TypeScript
+- TailwindCSS
+- CesiumJS *(Sprint 2)*
+- Zustand
+- TanStack Query
+
+---
+
+## 🗄 Database
 
 - PostgreSQL
 - PostGIS
 - Redis
+- MinIO
 
 ---
 
-## Geospatial
-
-- FastAPI
-- Google Earth Engine
-- GDAL
-- Rasterio
-- GeoPandas
-
----
-
-## Infrastructure
+## ☁ Infrastructure
 
 - Docker
 - Docker Compose
-- MinIO
 - Nginx
-
----
+- GitHub Actions
 
 # 🚀 Getting Started
 

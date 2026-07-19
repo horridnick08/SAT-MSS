@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import Header from '@/components/layout/Header';
 import Sidebar from '@/components/layout/Sidebar';
 import StatusBar from '@/components/layout/StatusBar';
+import AoiToolbar from '@/components/aoi/AoiToolbar';
 
 // Dynamically import GlobeViewer with SSR disabled to prevent server-side rendering issues
 const GlobeViewer = dynamic(
@@ -36,6 +37,7 @@ export default function MissionControlHome() {
         
         {/* Fullscreen Cesium Viewport */}
         <main className="flex-1 h-full relative bg-[#06080D]">
+          <AoiToolbar />
           <GlobeViewer />
         </main>
       </div>

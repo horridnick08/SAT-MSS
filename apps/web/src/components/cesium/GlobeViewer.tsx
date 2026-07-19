@@ -14,6 +14,9 @@ if (typeof window !== 'undefined') {
   }
 }
 
+import CesiumEventManager from './CesiumEventManager';
+import AoiDrawingLayer from './AoiDrawingLayer';
+
 // Initial viewpoint focusing on India
 const INDIA_POSITION = Cesium.Cartesian3.fromDegrees(78.9629, 20.5937, 5000000);
 const INDIA_ORIENTATION = {
@@ -90,6 +93,8 @@ export default function GlobeViewer({ children }: GlobeViewerProps) {
         projectionPicker={false}
         className="w-full h-full [&_.cesium-viewer-bottom]:hidden"
       >
+        <CesiumEventManager />
+        <AoiDrawingLayer />
         {children}
       </Viewer>
 

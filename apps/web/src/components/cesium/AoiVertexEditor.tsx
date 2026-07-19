@@ -8,6 +8,7 @@ import { useAoiStore } from '@/stores/useAoiStore';
 export default function AoiVertexEditor() {
   const { viewer } = useCesium();
   const selectedAoiId = useAoiStore((state) => state.selectedAoiId);
+  const isEditing = useAoiStore((state) => state.isEditing);
   const aois = useAoiStore((state) => state.aois);
   const updateVertex = useAoiStore((state) => state.updateVertex);
 
@@ -22,7 +23,7 @@ export default function AoiVertexEditor() {
   const handleOutlineColor = useMemo(() => Cesium.Color.fromCssColorString('#FFFFFF'), []);
 
   useEffect(() => {
-    if (!viewer || !selectedAoiId) return;
+    if (!viewer || !selectedAoiId || !isEditing) return;
 
     const handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
 
@@ -92,9 +93,9 @@ export default function AoiVertexEditor() {
         controller.enableLook = true;
       }
     };
-  }, [viewer, selectedAoiId, updateVertex]);
+  }, [viewer, selectedAoiId, isEditing, updateVertex]);
 
-  if (!selectedAoiId || activePoints.length === 0) return null;
+  if (!selectedAoiId || !isEditing || activePoints.length === 0) return null;
 
   return (
     <>

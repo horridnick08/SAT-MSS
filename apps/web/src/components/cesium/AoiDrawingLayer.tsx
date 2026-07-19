@@ -14,8 +14,20 @@ export default function AoiDrawingLayer() {
   const validationError = useAoiStore((state) => state.validationError);
 
   // Cache immutable Cesium objects to avoid constant re-allocations
-  const savedMaterial = useMemo(() => Cesium.Color.fromCssColorString('#1AABB0').withAlpha(0.15), []);
-  const savedOutlineColor = useMemo(() => Cesium.Color.fromCssColorString('#1AABB0'), []);
+  const priorityMaterials = useMemo(() => ({
+    HIGH: Cesium.Color.fromCssColorString('#C94040').withAlpha(0.15),
+    MEDIUM: Cesium.Color.fromCssColorString('#E88C30').withAlpha(0.15),
+    LOW: Cesium.Color.fromCssColorString('#2D8653').withAlpha(0.15),
+  }), []);
+
+  const priorityOutlineColors = useMemo(() => ({
+    HIGH: Cesium.Color.fromCssColorString('#C94040'),
+    MEDIUM: Cesium.Color.fromCssColorString('#E88C30'),
+    LOW: Cesium.Color.fromCssColorString('#2D8653'),
+  }), []);
+
+  const defaultMaterial = useMemo(() => Cesium.Color.fromCssColorString('#1AABB0').withAlpha(0.15), []);
+  const defaultOutlineColor = useMemo(() => Cesium.Color.fromCssColorString('#1AABB0'), []);
 
   const editingMaterial = useMemo(() => Cesium.Color.fromCssColorString('#E88C30').withAlpha(0.15), []);
   const editingOutlineColor = useMemo(() => Cesium.Color.fromCssColorString('#E88C30'), []);
@@ -35,14 +47,15 @@ export default function AoiDrawingLayer() {
   const renderedSavedAois = aois.map((aoi) => {
     const isSelected = aoi.id === selectedAoiId;
     const isInvalid = isSelected && !!validationError;
+    const aoiPriority = aoi.priority ?? 'MEDIUM';
 
     const material = isSelected
       ? (isInvalid ? errorMaterial : editingMaterial)
-      : savedMaterial;
+      : (priorityMaterials[aoiPriority] || defaultMaterial);
 
     const outlineColor = isSelected
       ? (isInvalid ? errorOutlineColor : editingOutlineColor)
-      : savedOutlineColor;
+      : (priorityOutlineColors[aoiPriority] || defaultOutlineColor);
 
     return (
       <Entity

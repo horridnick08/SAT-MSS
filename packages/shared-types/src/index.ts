@@ -163,6 +163,7 @@ export interface IAoi {
   districtName: string;
   priority: AoiPriority;
   isActive: boolean;
+  notes?: string | null;
   createdBy: string;
   createdAt: string;
   updatedAt: string;
@@ -182,12 +183,14 @@ export interface ICreateAoiRequest {
   stateCode: string;
   districtName: string;
   priority: AoiPriority;
+  notes?: string;
 }
 
 export interface IUpdateAoiRequest {
   name?: string;
   priority?: AoiPriority;
   isActive?: boolean;
+  notes?: string;
 }
 
 // -----------------------------------------------------------------------------

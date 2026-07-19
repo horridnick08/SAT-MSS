@@ -8,6 +8,7 @@ import { useAoiStore } from '@/stores/useAoiStore';
 export default function CesiumEventManager() {
   const { viewer } = useCesium();
   const isDrawing = useAoiStore((state) => state.isDrawing);
+  const isEditing = useAoiStore((state) => state.isEditing);
   const addVertex = useAoiStore((state) => state.addVertex);
   const updateTempPoint = useAoiStore((state) => state.updateTempPoint);
   const completeDrawing = useAoiStore((state) => state.completeDrawing);
@@ -75,6 +76,8 @@ export default function CesiumEventManager() {
       handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
 
       handler.setInputAction((event: { position: Cesium.Cartesian2 }) => {
+        if (isEditing) return; // Prevent selecting other AOIs or deselecting when editing is in progress
+
         const pickedObject = viewer.scene.pick(event.position);
         if (
           Cesium.defined(pickedObject) &&
@@ -120,7 +123,7 @@ export default function CesiumEventManager() {
         controller.enableLook = true;
       }
     };
-  }, [viewer, isDrawing, addVertex, updateTempPoint, completeDrawing, selectAoi]);
+  }, [viewer, isDrawing, isEditing, addVertex, updateTempPoint, completeDrawing, selectAoi]);
 
   // Listen to Escape key to cancel drawing
   useEffect(() => {
@@ -140,7 +143,7 @@ export default function CesiumEventManager() {
 
   // Listen to Escape key to cancel editing
   useEffect(() => {
-    if (!selectedAoiId) return;
+    if (!selectedAoiId || !isEditing) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -152,7 +155,7 @@ export default function CesiumEventManager() {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [selectedAoiId, cancelEditing]);
+  }, [selectedAoiId, isEditing, cancelEditing]);
 
   return null;
 }

@@ -1,10 +1,13 @@
 'use client';
 
+import React, { useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Header from '@/components/layout/Header';
 import Sidebar from '@/components/layout/Sidebar';
 import StatusBar from '@/components/layout/StatusBar';
 import AoiToolbar from '@/components/aoi/AoiToolbar';
+import AoiConfirmationForm from '@/components/aoi/AoiConfirmationForm';
+import { useAoiStore } from '@/stores/useAoiStore';
 
 // Dynamically import GlobeViewer with SSR disabled to prevent server-side rendering issues
 const GlobeViewer = dynamic(
@@ -25,6 +28,13 @@ const GlobeViewer = dynamic(
 );
 
 export default function MissionControlHome() {
+  const loadAois = useAoiStore((state) => state.loadAois);
+
+  // Load persisted AOIs from the API on mount
+  useEffect(() => {
+    loadAois();
+  }, [loadAois]);
+
   return (
     <div className="flex h-screen w-screen flex-col bg-[#06080D] text-[#E8EAF0] overflow-hidden font-sans">
       {/* Top HUD Workspace Header */}
@@ -38,6 +48,7 @@ export default function MissionControlHome() {
         {/* Fullscreen Cesium Viewport */}
         <main className="flex-1 h-full relative bg-[#06080D]">
           <AoiToolbar />
+          <AoiConfirmationForm />
           <GlobeViewer />
         </main>
       </div>

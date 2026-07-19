@@ -12,6 +12,9 @@ export default function CesiumEventManager() {
   const updateTempPoint = useAoiStore((state) => state.updateTempPoint);
   const completeDrawing = useAoiStore((state) => state.completeDrawing);
   const cancelDrawing = useAoiStore((state) => state.cancelDrawing);
+  const selectedAoiId = useAoiStore((state) => state.selectedAoiId);
+  const selectAoi = useAoiStore((state) => state.selectAoi);
+  const cancelEditing = useAoiStore((state) => state.cancelEditing);
 
   useEffect(() => {
     if (!viewer) return;
@@ -67,7 +70,35 @@ export default function CesiumEventManager() {
         completeDrawing();
       }, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
     } else {
-      // Reset normal map camera controls
+      // If we are not drawing, we want to allow picking saved polygons to edit
+      // and clicking empty space to deselect
+      handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
+
+      handler.setInputAction((event: { position: Cesium.Cartesian2 }) => {
+        const pickedObject = viewer.scene.pick(event.position);
+        if (
+          Cesium.defined(pickedObject) &&
+          pickedObject.id &&
+          typeof pickedObject.id.id === 'string' &&
+          pickedObject.id.id.startsWith('saved-aoi-')
+        ) {
+          const id = pickedObject.id.id.replace('saved-aoi-', '');
+          selectAoi(id);
+        } else if (
+          Cesium.defined(pickedObject) &&
+          pickedObject.id &&
+          typeof pickedObject.id.id === 'string' &&
+          pickedObject.id.id.startsWith('edit-vertex-')
+        ) {
+          // Clicked a vertex handle while editing - do not deselect
+          return;
+        } else {
+          // Clicked empty space: deselect the current selected AOI (if any)
+          selectAoi(null);
+        }
+      }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+      // Reset camera controls to active
       const controller = viewer.scene.screenSpaceCameraController;
       controller.enableRotate = true;
       controller.enableTranslate = true;
@@ -89,7 +120,7 @@ export default function CesiumEventManager() {
         controller.enableLook = true;
       }
     };
-  }, [viewer, isDrawing, addVertex, updateTempPoint, completeDrawing]);
+  }, [viewer, isDrawing, addVertex, updateTempPoint, completeDrawing, selectAoi]);
 
   // Listen to Escape key to cancel drawing
   useEffect(() => {
@@ -106,6 +137,22 @@ export default function CesiumEventManager() {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isDrawing, cancelDrawing]);
+
+  // Listen to Escape key to cancel editing
+  useEffect(() => {
+    if (!selectedAoiId) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        cancelEditing();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [selectedAoiId, cancelEditing]);
 
   return null;
 }

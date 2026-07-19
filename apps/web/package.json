@@ -14,6 +14,7 @@
     "@satmss/shared-constants": "workspace:*",
     "@satmss/shared-types": "workspace:*",
     "@tanstack/react-query": "^5.28.14",
+    "@turf/turf": "^7.3.5",
     "axios": "^1.6.8",
     "cesium": "^1.118.0",
     "clsx": "^2.1.0",

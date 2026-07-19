@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Entity, PolygonGraphics, PolylineGraphics, PointGraphics } from 'resium';
 import * as Cesium from 'cesium';
 import { useAoiStore } from '@/stores/useAoiStore';
@@ -10,25 +10,53 @@ export default function AoiDrawingLayer() {
   const activePoints = useAoiStore((state) => state.activePoints);
   const tempPoint = useAoiStore((state) => state.tempPoint);
   const isDrawing = useAoiStore((state) => state.isDrawing);
+  const selectedAoiId = useAoiStore((state) => state.selectedAoiId);
+  const validationError = useAoiStore((state) => state.validationError);
 
-  // 1. Render finalized, in-memory AOI polygons
+  // Cache immutable Cesium objects to avoid constant re-allocations
+  const savedMaterial = useMemo(() => Cesium.Color.fromCssColorString('#1AABB0').withAlpha(0.15), []);
+  const savedOutlineColor = useMemo(() => Cesium.Color.fromCssColorString('#1AABB0'), []);
+
+  const editingMaterial = useMemo(() => Cesium.Color.fromCssColorString('#E88C30').withAlpha(0.15), []);
+  const editingOutlineColor = useMemo(() => Cesium.Color.fromCssColorString('#E88C30'), []);
+
+  const errorMaterial = useMemo(() => Cesium.Color.fromCssColorString('#C94040').withAlpha(0.15), []);
+  const errorOutlineColor = useMemo(() => Cesium.Color.fromCssColorString('#C94040'), []);
+
+  const activeMaterial = useMemo(() => Cesium.Color.fromCssColorString('#E88C30').withAlpha(0.15), []);
+  const vertexColor = useMemo(() => Cesium.Color.fromCssColorString('#E88C30'), []);
+  const vertexOutlineColor = useMemo(() => Cesium.Color.fromCssColorString('#FFFFFF'), []);
+  const activePolylineMaterial = useMemo(() => new Cesium.PolylineDashMaterialProperty({
+    color: Cesium.Color.fromCssColorString('#E88C30'),
+    dashLength: 16,
+  }), []);
+
+  // 1. Render finalized, in-memory AOI polygons using precomputed center coordinates
   const renderedSavedAois = aois.map((aoi) => {
-    const boundingSphere = Cesium.BoundingSphere.fromPoints(aoi.points);
-    const center = boundingSphere.center;
+    const isSelected = aoi.id === selectedAoiId;
+    const isInvalid = isSelected && !!validationError;
+
+    const material = isSelected
+      ? (isInvalid ? errorMaterial : editingMaterial)
+      : savedMaterial;
+
+    const outlineColor = isSelected
+      ? (isInvalid ? errorOutlineColor : editingOutlineColor)
+      : savedOutlineColor;
 
     return (
       <Entity
         key={`saved-aoi-${aoi.id}`}
         id={`saved-aoi-${aoi.id}`}
         name={aoi.name}
-        position={center}
+        position={aoi.center}
       >
         <PolygonGraphics
           hierarchy={aoi.points}
-          material={Cesium.Color.fromCssColorString('#1AABB0').withAlpha(0.15)}
+          material={material}
           outline={true}
-          outlineColor={Cesium.Color.fromCssColorString('#1AABB0')}
-          outlineWidth={2}
+          outlineColor={outlineColor}
+          outlineWidth={isSelected ? 3 : 2}
         />
       </Entity>
     );
@@ -59,7 +87,7 @@ export default function AoiDrawingLayer() {
             <Entity id="active-aoi-polygon-preview">
               <PolygonGraphics
                 hierarchy={activePoints}
-                material={Cesium.Color.fromCssColorString('#E88C30').withAlpha(0.15)}
+                material={activeMaterial}
               />
             </Entity>
           )}
@@ -70,12 +98,7 @@ export default function AoiDrawingLayer() {
               <PolylineGraphics
                 positions={polylinePositions}
                 width={2}
-                material={
-                  new Cesium.PolylineDashMaterialProperty({
-                    color: Cesium.Color.fromCssColorString('#E88C30'),
-                    dashLength: 16,
-                  })
-                }
+                material={activePolylineMaterial}
               />
             </Entity>
           )}
@@ -88,8 +111,8 @@ export default function AoiDrawingLayer() {
             >
               <PointGraphics
                 pixelSize={8}
-                color={Cesium.Color.fromCssColorString('#E88C30')}
-                outlineColor={Cesium.Color.fromCssColorString('#FFFFFF')}
+                color={vertexColor}
+                outlineColor={vertexOutlineColor}
                 outlineWidth={2}
                 disableDepthTestDistance={Number.POSITIVE_INFINITY}
               />

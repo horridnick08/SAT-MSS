@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --project tsconfig.json --noEmit",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "node -e \"const fs = require('fs'); fs.mkdirSync('public', { recursive: true }); if (fs.existsSync('node_modules/cesium/Build/Cesium')) { fs.cpSync('node_modules/cesium/Build/Cesium', 'public/cesium', { recursive: true }); console.log('Cesium assets copied'); }\""
   },
   "dependencies": {
     "@satmss/shared-constants": "workspace:*",

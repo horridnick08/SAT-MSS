@@ -8,6 +8,7 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  transpilePackages: ['cesium', 'resium'],
   // Custom webpack configuration for Cesium
   webpack: (config, { isServer }) => {
     if (!isServer) {
@@ -15,6 +16,10 @@ const nextConfig = {
     }
     return config;
   },
+  experimental: {
+    workerThreads: false,
+    cpus: 1
+  }
 };
 
 export default nextConfig;

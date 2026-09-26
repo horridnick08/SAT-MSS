@@ -8,7 +8,6 @@ import { useForm } from 'react-hook-form';
 import { apiClient } from '@/lib/api/client';
 import { useAuthStore } from '@/stores/useAuthStore';
 
-
 export default function LoginPage() {
   const router = useRouter();
   const setCredentials = useAuthStore((state) => state.setCredentials);

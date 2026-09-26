@@ -8,7 +8,6 @@ import { db } from './db/client.js';
 import { logger } from './lib/logger.js';
 import { initializeSocket } from './websocket/socket.js';
 
-
 const PORT = parseInt(process.env['API_PORT'] ?? '3001', 10);
 
 async function main(): Promise<void> {

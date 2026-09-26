@@ -178,5 +178,3 @@ export default function GlobeViewer({ children }: GlobeViewerProps) {
     </div>
   );
 }
-
-

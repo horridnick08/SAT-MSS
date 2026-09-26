@@ -6,10 +6,7 @@
     "sourceType": "module",
     "project": true
   },
-  "plugins": [
-    "@typescript-eslint",
-    "import"
-  ],
+  "plugins": ["@typescript-eslint", "import"],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended-type-checked",
@@ -30,16 +27,7 @@
     "import/order": [
       "error",
       {
-        "groups": [
-          "builtin",
-          "external",
-          [
-            "internal",
-            "parent",
-            "sibling",
-            "index"
-          ]
-        ],
+        "groups": ["builtin", "external", ["internal", "parent", "sibling", "index"]],
         "pathGroups": [
           {
             "pattern": "@satmss/**",
@@ -57,10 +45,7 @@
     "no-console": [
       "warn",
       {
-        "allow": [
-          "warn",
-          "error"
-        ]
+        "allow": ["warn", "error"]
       }
     ],
     "@typescript-eslint/no-unsafe-assignment": "off",
@@ -80,12 +65,5 @@
       }
     }
   },
-  "ignorePatterns": [
-    "node_modules",
-    "dist",
-    ".next",
-    "coverage",
-    "*.config.js",
-    "*.config.mjs"
-  ]
+  "ignorePatterns": ["node_modules", "dist", ".next", "coverage", "*.config.js", "*.config.mjs"]
 }

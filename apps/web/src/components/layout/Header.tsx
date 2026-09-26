@@ -6,7 +6,6 @@ import React from 'react';
 
 import { useAuthStore } from '@/stores/useAuthStore';
 
-
 export default function Header() {
   const router = useRouter();
   const { user, clearCredentials } = useAuthStore();

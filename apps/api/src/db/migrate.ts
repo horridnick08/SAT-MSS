@@ -1,9 +1,11 @@
 import 'dotenv/config';
-import { migrate } from 'drizzle-orm/node-postgres/migrator';
-import { db, pool } from './client.js';
-import { logger } from '../lib/logger.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
+
+import { migrate } from 'drizzle-orm/node-postgres/migrator';
+
+import { db, pool } from './client.js';
+import { logger } from '../lib/logger.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

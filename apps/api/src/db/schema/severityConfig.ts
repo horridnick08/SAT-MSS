@@ -1,5 +1,6 @@
-import { pgTable, uuid, varchar, integer, timestamp } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
+import { pgTable, uuid, varchar, integer, timestamp } from 'drizzle-orm/pg-core';
+
 import { users } from './users.js';
 
 export const severityConfig = pgTable('severity_config', {

@@ -1,5 +1,6 @@
-import { pgTable, uuid, varchar, timestamp, real, text } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
+import { pgTable, uuid, varchar, timestamp, real, text } from 'drizzle-orm/pg-core';
+
 import { aois } from './aois.js';
 import { imageryScenes } from './imageryScenes.js';
 

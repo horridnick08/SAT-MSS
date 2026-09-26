@@ -1,9 +1,10 @@
+import { ERROR_CODES } from '@satmss/shared-constants';
+import { eq } from 'drizzle-orm';
 import type { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+
 import { db } from '../db/client.js';
 import { users } from '../db/schema/users.js';
-import { eq } from 'drizzle-orm';
-import { ERROR_CODES } from '@satmss/shared-constants';
 import { logger } from '../lib/logger.js';
 
 const JWT_SECRET = process.env['JWT_SECRET'] ?? 'default_secret';

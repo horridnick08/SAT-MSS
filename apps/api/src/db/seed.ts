@@ -1,10 +1,11 @@
 import 'dotenv/config';
-import { db, pool } from './client.js';
-import { users } from './schema/users.js';
-import { severityConfig } from './schema/severityConfig.js';
-import { logger } from '../lib/logger.js';
-import argon2 from 'argon2';
 import { DEFAULT_SEVERITY_WEIGHTS } from '@satmss/shared-constants';
+import argon2 from 'argon2';
+
+import { db, pool } from './client.js';
+import { severityConfig } from './schema/severityConfig.js';
+import { users } from './schema/users.js';
+import { logger } from '../lib/logger.js';
 
 async function seed(): Promise<void> {
   logger.info('Starting database seeding...');
@@ -34,7 +35,7 @@ async function seed(): Promise<void> {
           isActive: true,
         })
         .returning();
-      adminId = adminUser!.id;
+      adminId = adminUser.id;
 
       // Create Analyst
       await db.insert(users).values({

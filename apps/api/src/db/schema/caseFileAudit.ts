@@ -1,5 +1,6 @@
-import { pgTable, uuid, varchar, timestamp } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
+import { pgTable, uuid, varchar, timestamp } from 'drizzle-orm/pg-core';
+
 import { caseFiles } from './caseFiles.js';
 import { users } from './users.js';
 

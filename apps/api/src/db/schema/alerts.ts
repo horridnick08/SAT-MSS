@@ -1,8 +1,9 @@
-import { pgTable, uuid, varchar, boolean, real, timestamp } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
+import { pgTable, uuid, varchar, boolean, real, timestamp } from 'drizzle-orm/pg-core';
+
+import { analysisRuns } from './analysisRuns.js';
 import { aois } from './aois.js';
 import { changeZones } from './changeZones.js';
-import { analysisRuns } from './analysisRuns.js';
 
 export const alerts = pgTable('alerts', {
   id: uuid('id')

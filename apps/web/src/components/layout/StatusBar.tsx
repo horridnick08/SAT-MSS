@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ShieldCheck, HardDrive, Wifi, Clock, UserCheck } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 
 interface ConnectionStatus {
   api: 'checking' | 'connected' | 'disconnected';

@@ -1,6 +1,5 @@
 'use client';
 
-import React, { useState } from 'react';
 import {
   LayoutDashboard,
   Globe,
@@ -13,6 +12,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
+import React, { useState } from 'react';
 
 interface SidebarItem {
   id: string;

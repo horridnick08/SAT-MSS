@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter, Orbitron, JetBrains_Mono } from 'next/font/google';
+
 import './globals.css';
 import { Providers } from './providers';
 import { AuthGuard } from '@/components/layout/AuthGuard';

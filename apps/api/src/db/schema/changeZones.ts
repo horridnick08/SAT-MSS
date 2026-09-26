@@ -1,7 +1,8 @@
-import { pgTable, uuid, varchar, boolean, real, text } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
-import { geometryPolygon, geometryPoint } from './customTypes.js';
+import { pgTable, uuid, varchar, boolean, real, text } from 'drizzle-orm/pg-core';
+
 import { analysisRuns } from './analysisRuns.js';
+import { geometryPolygon, geometryPoint } from './customTypes.js';
 
 export const changeZones = pgTable('change_zones', {
   id: uuid('id')

@@ -1,19 +1,20 @@
-import express, { type Express, type Request, type Response } from 'express';
 import cors from 'cors';
+import express, { type Express, type Request, type Response } from 'express';
 import helmet from 'helmet';
-import { requestLogger } from './middleware/requestLogger.js';
+
 import { globalErrorHandler } from './middleware/errorHandler.js';
-import { authRouter } from './modules/auth/auth.router.js';
-import { aoiRouter } from './modules/aoi/aoi.router.js';
-import { imageryRouter } from './modules/imagery/imagery.router.js';
-import { boundariesRouter } from './modules/boundaries/boundaries.router.js';
-import { analysisRouter } from './modules/analysis/analysis.router.js';
-import { alertsRouter } from './modules/alerts/alerts.router.js';
-import { casesRouter } from './modules/cases/cases.router.js';
-import { reportsRouter } from './modules/reports/reports.router.js';
-import { adminRouter } from './modules/admin/admin.router.js';
-import { notificationsRouter } from './modules/notifications/notifications.router.js';
 import { apiRateLimiter } from './middleware/rateLimiter.js';
+import { requestLogger } from './middleware/requestLogger.js';
+import { adminRouter } from './modules/admin/admin.router.js';
+import { alertsRouter } from './modules/alerts/alerts.router.js';
+import { analysisRouter } from './modules/analysis/analysis.router.js';
+import { aoiRouter } from './modules/aoi/aoi.router.js';
+import { authRouter } from './modules/auth/auth.router.js';
+import { boundariesRouter } from './modules/boundaries/boundaries.router.js';
+import { casesRouter } from './modules/cases/cases.router.js';
+import { imageryRouter } from './modules/imagery/imagery.router.js';
+import { notificationsRouter } from './modules/notifications/notifications.router.js';
+import { reportsRouter } from './modules/reports/reports.router.js';
 
 export function createApp(): Express {
   const app = express();

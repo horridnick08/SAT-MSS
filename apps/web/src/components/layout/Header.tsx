@@ -1,9 +1,11 @@
 'use client';
 
-import React from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/stores/useAuthStore';
 import { Bell, Settings, LogOut, Radio, User } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import React from 'react';
+
+import { useAuthStore } from '@/stores/useAuthStore';
+
 
 export default function Header() {
   const router = useRouter();

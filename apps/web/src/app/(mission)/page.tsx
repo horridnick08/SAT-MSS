@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import React, { useEffect } from 'react';
+
+import AoiConfirmationForm from '@/components/aoi/AoiConfirmationForm';
+import AoiToolbar from '@/components/aoi/AoiToolbar';
 import Header from '@/components/layout/Header';
 import Sidebar from '@/components/layout/Sidebar';
 import StatusBar from '@/components/layout/StatusBar';
-import AoiToolbar from '@/components/aoi/AoiToolbar';
-import AoiConfirmationForm from '@/components/aoi/AoiConfirmationForm';
 import { useAoiStore } from '@/stores/useAoiStore';
 
 // Dynamically import GlobeViewer with SSR disabled to prevent server-side rendering issues

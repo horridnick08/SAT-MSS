@@ -1,8 +1,9 @@
 'use client';
 
+import * as Cesium from 'cesium';
 import { useEffect } from 'react';
 import { useCesium } from 'resium';
-import * as Cesium from 'cesium';
+
 import { useAoiStore } from '@/stores/useAoiStore';
 
 export default function CesiumEventManager() {

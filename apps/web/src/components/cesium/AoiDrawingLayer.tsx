@@ -1,8 +1,9 @@
 'use client';
 
+import * as Cesium from 'cesium';
 import React, { useMemo } from 'react';
 import { Entity, PolygonGraphics, PolylineGraphics, PointGraphics } from 'resium';
-import * as Cesium from 'cesium';
+
 import { useAoiStore } from '@/stores/useAoiStore';
 
 export default function AoiDrawingLayer() {

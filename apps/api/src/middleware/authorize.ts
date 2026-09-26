@@ -1,6 +1,6 @@
-import type { Request, Response, NextFunction } from 'express';
 import { ROLE_HIERARCHY, type UserRole } from '@satmss/shared-constants';
 import { ERROR_CODES } from '@satmss/shared-constants';
+import type { Request, Response, NextFunction } from 'express';
 
 export function authorize(minimumRole: UserRole) {
   return (req: Request, res: Response, next: NextFunction): void => {

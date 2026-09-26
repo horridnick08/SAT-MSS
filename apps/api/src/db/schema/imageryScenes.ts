@@ -1,7 +1,8 @@
-import { pgTable, uuid, varchar, timestamp, real, text, jsonb } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
-import { geometryPolygon } from './customTypes.js';
+import { pgTable, uuid, varchar, timestamp, real, text, jsonb } from 'drizzle-orm/pg-core';
+
 import { aois } from './aois.js';
+import { geometryPolygon } from './customTypes.js';
 
 export const imageryScenes = pgTable('imagery_scenes', {
   id: uuid('id')

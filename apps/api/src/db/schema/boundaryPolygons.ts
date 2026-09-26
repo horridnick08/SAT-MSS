@@ -1,7 +1,8 @@
-import { pgTable, uuid, varchar, text, real } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
-import { geometryMultiPolygon } from './customTypes.js';
+import { pgTable, uuid, varchar, text, real } from 'drizzle-orm/pg-core';
+
 import { boundaryDatasets } from './boundaryDatasets.js';
+import { geometryMultiPolygon } from './customTypes.js';
 
 export const boundaryPolygons = pgTable('boundary_polygons', {
   id: uuid('id')

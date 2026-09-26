@@ -1,5 +1,6 @@
-import { pgTable, uuid, varchar, boolean, timestamp, integer, text } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
+import { pgTable, uuid, varchar, boolean, timestamp, integer, text } from 'drizzle-orm/pg-core';
+
 import { users } from './users.js';
 
 export const boundaryDatasets = pgTable('boundary_datasets', {

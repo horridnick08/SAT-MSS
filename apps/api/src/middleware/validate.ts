@@ -1,6 +1,6 @@
+import { ERROR_CODES } from '@satmss/shared-constants';
 import type { Request, Response, NextFunction } from 'express';
 import type { AnyZodObject } from 'zod';
-import { ERROR_CODES } from '@satmss/shared-constants';
 
 export function validate(schema: AnyZodObject) {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {

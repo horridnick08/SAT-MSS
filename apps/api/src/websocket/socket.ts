@@ -1,6 +1,9 @@
 import type { Server as HttpServer } from 'http';
-import { Server, Socket } from 'socket.io';
+
 import jwt from 'jsonwebtoken';
+import type { Socket } from 'socket.io';
+import { Server } from 'socket.io';
+
 import { logger } from '../lib/logger.js';
 
 const JWT_SECRET = process.env['JWT_SECRET'] ?? 'default_secret';

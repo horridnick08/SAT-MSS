@@ -1,15 +1,16 @@
+import { USER_ROLES } from '@satmss/shared-constants';
 import { Router } from 'express';
+
 import { AoiController } from './aoi.controller.js';
-import { authenticate } from '../../middleware/authenticate.js';
-import { authorize } from '../../middleware/authorize.js';
-import { validate } from '../../middleware/validate.js';
 import {
   createAoiSchema,
   updateAoiSchema,
   getAoiSchema,
   listAoisSchema,
 } from './aoi.validation.js';
-import { USER_ROLES } from '@satmss/shared-constants';
+import { authenticate } from '../../middleware/authenticate.js';
+import { authorize } from '../../middleware/authorize.js';
+import { validate } from '../../middleware/validate.js';
 
 const router = Router();
 

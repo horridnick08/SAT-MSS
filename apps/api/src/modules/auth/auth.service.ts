@@ -1,10 +1,11 @@
+import { ERROR_CODES } from '@satmss/shared-constants';
+import argon2 from 'argon2';
+import { eq } from 'drizzle-orm';
+import jwt from 'jsonwebtoken';
+
 import { db } from '../../db/client.js';
 import { users } from '../../db/schema/users.js';
-import { eq } from 'drizzle-orm';
-import argon2 from 'argon2';
-import jwt from 'jsonwebtoken';
-import { ERROR_CODES } from '@satmss/shared-constants';
-import { CustomError } from '../../middleware/errorHandler.js';
+import type { CustomError } from '../../middleware/errorHandler.js';
 
 const JWT_SECRET = process.env['JWT_SECRET'] ?? 'default_secret';
 const JWT_EXPIRES_IN = process.env['JWT_EXPIRES_IN'] ?? '8h';

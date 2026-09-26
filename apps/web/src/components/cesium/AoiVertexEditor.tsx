@@ -1,8 +1,9 @@
 'use client';
 
+import * as Cesium from 'cesium';
 import React, { useEffect, useRef, useMemo } from 'react';
 import { useCesium, Entity, PointGraphics } from 'resium';
-import * as Cesium from 'cesium';
+
 import { useAoiStore } from '@/stores/useAoiStore';
 
 export default function AoiVertexEditor() {

@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
+
 import { useAuthStore } from '@/stores/useAuthStore';
 
 interface AuthGuardProps {

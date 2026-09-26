@@ -1,5 +1,6 @@
-import { pgTable, uuid, varchar, boolean, timestamp, text, real } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
+import { pgTable, uuid, varchar, boolean, timestamp, text, real } from 'drizzle-orm/pg-core';
+
 import { geometryPolygon } from './customTypes.js';
 import { users } from './users.js';
 

@@ -1,5 +1,6 @@
-import { pgTable, uuid, text, integer } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
+import { pgTable, uuid, text, integer } from 'drizzle-orm/pg-core';
+
 import { caseFiles } from './caseFiles.js';
 import { imageryScenes } from './imageryScenes.js';
 

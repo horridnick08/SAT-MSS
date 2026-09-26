@@ -1,10 +1,13 @@
 import 'dotenv/config';
-import { createApp } from './app.js';
 import { createServer } from 'http';
-import { initializeSocket } from './websocket/socket.js';
-import { logger } from './lib/logger.js';
-import { db } from './db/client.js';
+
 import { sql } from 'drizzle-orm';
+
+import { createApp } from './app.js';
+import { db } from './db/client.js';
+import { logger } from './lib/logger.js';
+import { initializeSocket } from './websocket/socket.js';
+
 
 const PORT = parseInt(process.env['API_PORT'] ?? '3001', 10);
 

@@ -15,22 +15,25 @@ async function seed(): Promise<void> {
     const directorEmail = 'director.raj@satmss.gov.in';
 
     const existingUsers = await db.select().from(users);
-    
-    let adminId = existingUsers.find(u => u.email === adminEmail)?.id;
+
+    let adminId = existingUsers.find((u) => u.email === adminEmail)?.id;
 
     if (existingUsers.length === 0) {
       logger.info('No users found. Creating default seed users...');
       const passwordHash = await argon2.hash('SatmssPassword2026!');
 
       // Create Admin
-      const [adminUser] = await db.insert(users).values({
-        email: adminEmail,
-        passwordHash,
-        name: 'System Admin',
-        organization: 'NRSC',
-        role: 'ADMIN',
-        isActive: true,
-      }).returning();
+      const [adminUser] = await db
+        .insert(users)
+        .values({
+          email: adminEmail,
+          passwordHash,
+          name: 'System Admin',
+          organization: 'NRSC',
+          role: 'ADMIN',
+          isActive: true,
+        })
+        .returning();
       adminId = adminUser!.id;
 
       // Create Analyst
@@ -74,7 +77,9 @@ async function seed(): Promise<void> {
       }
       logger.info('Default severity weights seeded successfully');
     } else {
-      logger.info('Severity configurations already exist or no admin user found, skipping config seeding');
+      logger.info(
+        'Severity configurations already exist or no admin user found, skipping config seeding',
+      );
     }
 
     logger.info('Database seeding completed successfully');

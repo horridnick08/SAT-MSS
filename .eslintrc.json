@@ -22,11 +22,7 @@
     "import/order": [
       "error",
       {
-        "groups": [
-          "builtin",
-          "external",
-          ["internal", "parent", "sibling", "index"]
-        ],
+        "groups": ["builtin", "external", ["internal", "parent", "sibling", "index"]],
         "pathGroups": [
           {
             "pattern": "@satmss/**",
@@ -48,12 +44,5 @@
       }
     }
   },
-  "ignorePatterns": [
-    "node_modules",
-    "dist",
-    ".next",
-    "coverage",
-    "*.config.js",
-    "*.config.mjs"
-  ]
+  "ignorePatterns": ["node_modules", "dist", ".next", "coverage", "*.config.js", "*.config.mjs"]
 }

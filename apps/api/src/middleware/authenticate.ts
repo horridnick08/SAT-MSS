@@ -8,11 +8,7 @@ import { logger } from '../lib/logger.js';
 
 const JWT_SECRET = process.env['JWT_SECRET'] ?? 'default_secret';
 
-export async function authenticate(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): Promise<void> {
+export async function authenticate(req: Request, res: Response, next: NextFunction): Promise<void> {
   const authHeader = req.headers['authorization'];
   if (!authHeader?.startsWith('Bearer ')) {
     res.status(401).json({

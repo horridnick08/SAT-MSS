@@ -5,16 +5,31 @@ import { changeZones } from './changeZones.js';
 import { analysisRuns } from './analysisRuns.js';
 
 export const alerts = pgTable('alerts', {
-  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
-  aoiId: uuid('aoi_id').notNull().references(() => aois.id, { onDelete: 'restrict' }),
-  primaryZoneId: uuid('primary_zone_id').notNull().references(() => changeZones.id, { onDelete: 'restrict' }),
-  runId: uuid('run_id').notNull().references(() => analysisRuns.id, { onDelete: 'restrict' }),
+  id: uuid('id')
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  aoiId: uuid('aoi_id')
+    .notNull()
+    .references(() => aois.id, { onDelete: 'restrict' }),
+  primaryZoneId: uuid('primary_zone_id')
+    .notNull()
+    .references(() => changeZones.id, { onDelete: 'restrict' }),
+  runId: uuid('run_id')
+    .notNull()
+    .references(() => analysisRuns.id, { onDelete: 'restrict' }),
   severityScore: real('severity_score').notNull(),
-  intersectionCategory: varchar('intersection_category', { length: 40 }).notNull()
-    .$type<'FULLY_WITHIN_CONCESSION' | 'CONCESSION_VIOLATION' | 'PROTECTED_AREA_INCURSION' | 'NO_CONCESSION_OVERLAP'>(),
+  intersectionCategory: varchar('intersection_category', { length: 40 })
+    .notNull()
+    .$type<
+      | 'FULLY_WITHIN_CONCESSION'
+      | 'CONCESSION_VIOLATION'
+      | 'PROTECTED_AREA_INCURSION'
+      | 'NO_CONCESSION_OVERLAP'
+    >(),
   totalAreaHa: real('total_area_ha').notNull(),
   zoneCount: real('zone_count').notNull(),
-  status: varchar('status', { length: 40 }).notNull()
+  status: varchar('status', { length: 40 })
+    .notNull()
     .$type<
       | 'PENDING_REVIEW'
       | 'UNDER_REVIEW'

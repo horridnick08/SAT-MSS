@@ -2,12 +2,16 @@ import { pgTable, uuid, varchar, boolean, timestamp, integer, text } from 'drizz
 import { sql } from 'drizzle-orm';
 
 export const users = pgTable('users', {
-  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  id: uuid('id')
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
   email: varchar('email', { length: 255 }).notNull().unique(),
   passwordHash: varchar('password_hash', { length: 255 }).notNull(),
   name: varchar('name', { length: 150 }).notNull(),
   organization: varchar('organization', { length: 150 }).notNull(),
-  role: varchar('role', { length: 20 }).notNull().$type<'FIELD_RANGER' | 'ANALYST' | 'DIRECTOR' | 'ADMIN'>(),
+  role: varchar('role', { length: 20 })
+    .notNull()
+    .$type<'FIELD_RANGER' | 'ANALYST' | 'DIRECTOR' | 'ADMIN'>(),
   isActive: boolean('is_active').notNull().default(true),
   notificationThreshold: integer('notification_threshold').notNull().default(70),
   lastLoginAt: timestamp('last_login_at', { withTimezone: true }),

@@ -37,7 +37,9 @@ export function AuthGuard({ children }: AuthGuardProps) {
       <div className="flex h-screen w-screen items-center justify-center bg-[#06080D] text-[#E8EAF0]">
         <div className="flex flex-col items-center gap-4">
           <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#E88C30] border-t-transparent" />
-          <span className="font-display text-xs tracking-widest text-[#8A9BBB]">INITIALIZING SYSTEM</span>
+          <span className="font-display text-xs tracking-widest text-[#8A9BBB]">
+            INITIALIZING SYSTEM
+          </span>
         </div>
       </div>
     );

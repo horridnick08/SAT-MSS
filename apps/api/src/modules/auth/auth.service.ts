@@ -13,11 +13,7 @@ const JWT_REFRESH_EXPIRES_IN = process.env['JWT_REFRESH_EXPIRES_IN'] ?? '30d';
 
 export class AuthService {
   static async login(email: string, password: string) {
-    const [userRecord] = await db
-      .select()
-      .from(users)
-      .where(eq(users.email, email))
-      .limit(1);
+    const [userRecord] = await db.select().from(users).where(eq(users.email, email)).limit(1);
 
     if (!userRecord || !userRecord.isActive) {
       const err: CustomError = new Error('Invalid email or password.');
@@ -35,10 +31,7 @@ export class AuthService {
     }
 
     // Update last login timestamp
-    await db
-      .update(users)
-      .set({ lastLoginAt: new Date() })
-      .where(eq(users.id, userRecord.id));
+    await db.update(users).set({ lastLoginAt: new Date() }).where(eq(users.id, userRecord.id));
 
     // Generate JWT tokens
     const token = jwt.sign(
@@ -47,11 +40,9 @@ export class AuthService {
       { expiresIn: JWT_EXPIRES_IN as any },
     );
 
-    const refreshToken = jwt.sign(
-      { sub: userRecord.id },
-      JWT_REFRESH_SECRET as jwt.Secret,
-      { expiresIn: JWT_REFRESH_EXPIRES_IN as any },
-    );
+    const refreshToken = jwt.sign({ sub: userRecord.id }, JWT_REFRESH_SECRET as jwt.Secret, {
+      expiresIn: JWT_REFRESH_EXPIRES_IN as any,
+    });
 
     // Omit password hash from response
     const { passwordHash: _, totpSecret: __, ...userProfile } = userRecord;
@@ -64,11 +55,7 @@ export class AuthService {
   }
 
   static async getMe(userId: string) {
-    const [userRecord] = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, userId))
-      .limit(1);
+    const [userRecord] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
 
     if (!userRecord || !userRecord.isActive) {
       const err: CustomError = new Error('User not found or deactivated.');

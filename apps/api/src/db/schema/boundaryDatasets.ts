@@ -3,7 +3,9 @@ import { sql } from 'drizzle-orm';
 import { users } from './users.js';
 
 export const boundaryDatasets = pgTable('boundary_datasets', {
-  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  id: uuid('id')
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
   name: varchar('name', { length: 200 }).notNull(),
   type: varchar('type', { length: 20 }).notNull().$type<'CONCESSION' | 'PROTECTED_AREA'>(),
   stateCode: varchar('state_code', { length: 5 }).notNull(),
@@ -13,7 +15,9 @@ export const boundaryDatasets = pgTable('boundary_datasets', {
   fileFormat: varchar('file_format', { length: 20 }).notNull(), // GEOJSON | KML | SHAPEFILE
   storageKey: text('storage_key'), // Original file in object storage
   notes: text('notes'),
-  importedBy: uuid('imported_by').notNull().references(() => users.id, { onDelete: 'restrict' }),
+  importedBy: uuid('imported_by')
+    .notNull()
+    .references(() => users.id, { onDelete: 'restrict' }),
   importedAt: timestamp('imported_at', { withTimezone: true }).notNull().defaultNow(),
   activatedAt: timestamp('activated_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),

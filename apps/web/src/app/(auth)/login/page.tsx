@@ -20,7 +20,7 @@ export default function LoginPage() {
   } = useForm<ILoginRequest>();
 
   const onSubmit = async (data: ILoginRequest) => {
-    console.log("LOGIN CLICKED");
+    console.log('LOGIN CLICKED');
     console.log(data);
     setIsLoading(true);
     setErrorMessage(null);
@@ -42,25 +42,27 @@ export default function LoginPage() {
     <div className="relative flex h-screen w-screen items-center justify-center bg-[#06080D] px-4">
       {/* Ambient background visual matching the PXD splash screen */}
       <div className="absolute h-[600px] w-[600px] rounded-full bg-[#1AABB0]/5 blur-[120px]" />
-      <div className="absolute h-[400px] w-[400px] rounded-full bg-[#E88C30]/5 blur-[100px] translate-x-20 -translate-y-20" />
+      <div className="absolute h-[400px] w-[400px] -translate-y-20 translate-x-20 rounded-full bg-[#E88C30]/5 blur-[100px]" />
 
-      <div className="glass-deep z-10 w-full max-w-md rounded-xl p-8 border border-white/5">
+      <div className="glass-deep z-10 w-full max-w-md rounded-xl border border-white/5 p-8">
         <div className="mb-8 text-center">
-          <h1 className="font-display text-2xl font-bold tracking-[0.15em] text-[#E8EAF0]">SAT-MSS</h1>
-          <p className="font-display text-xs tracking-widest text-[#8A9BBB] mt-2 uppercase">
+          <h1 className="font-display text-2xl font-bold tracking-[0.15em] text-[#E8EAF0]">
+            SAT-MSS
+          </h1>
+          <p className="mt-2 font-display text-xs uppercase tracking-widest text-[#8A9BBB]">
             Mission Control Portal
           </p>
         </div>
 
         {errorMessage && (
-          <div className="mb-6 rounded-md bg-[#C94040]/10 border border-[#C94040]/30 p-3 text-xs text-[#C94040]">
+          <div className="mb-6 rounded-md border border-[#C94040]/30 bg-[#C94040]/10 p-3 text-xs text-[#C94040]">
             {errorMessage}
           </div>
         )}
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-[#8A9BBB] mb-2">
+            <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-[#8A9BBB]">
               Security Email
             </label>
             <input
@@ -76,12 +78,12 @@ export default function LoginPage() {
               })}
             />
             {errors.email && (
-              <span className="text-[10px] text-[#C94040] mt-1 block">{errors.email.message}</span>
+              <span className="mt-1 block text-[10px] text-[#C94040]">{errors.email.message}</span>
             )}
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-[#8A9BBB] mb-2">
+            <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-[#8A9BBB]">
               Passcode
             </label>
             <input
@@ -91,14 +93,16 @@ export default function LoginPage() {
               {...register('password', { required: 'Passcode is required' })}
             />
             {errors.password && (
-              <span className="text-[10px] text-[#C94040] mt-1 block">{errors.password.message}</span>
+              <span className="mt-1 block text-[10px] text-[#C94040]">
+                {errors.password.message}
+              </span>
             )}
           </div>
 
           <button
             type="submit"
             disabled={isLoading}
-            className="glass-btn-primary flex w-full items-center justify-center rounded py-3 text-xs tracking-widest uppercase hover:bg-[#F5A042] disabled:opacity-50"
+            className="glass-btn-primary flex w-full items-center justify-center rounded py-3 text-xs uppercase tracking-widest hover:bg-[#F5A042] disabled:opacity-50"
           >
             {isLoading ? (
               <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
@@ -108,7 +112,7 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <div className="mt-8 text-center text-[10px] text-[#4E5D7A] tracking-wider font-mono">
+        <div className="mt-8 text-center font-mono text-[10px] tracking-wider text-[#4E5D7A]">
           SECURE CHANNEL · NRSC · ISRO · MINISTRY OF MINES
         </div>
       </div>

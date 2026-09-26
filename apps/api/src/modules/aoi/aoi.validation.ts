@@ -43,11 +43,9 @@ export const createAoiSchema = z.object({
       .max(100, 'Name must not exceed 100 characters')
       .trim(),
     geometry: geoJsonPolygonSchema,
-    stateCode: z
-      .string()
-      .refine((code) => Object.keys(INDIA_STATE_CODES).includes(code), {
-        message: 'stateCode must be a valid ISO 3166-2:IN state code',
-      }),
+    stateCode: z.string().refine((code) => Object.keys(INDIA_STATE_CODES).includes(code), {
+      message: 'stateCode must be a valid ISO 3166-2:IN state code',
+    }),
     districtName: z
       .string()
       .min(1, 'districtName is required')

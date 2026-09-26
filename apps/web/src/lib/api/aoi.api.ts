@@ -34,13 +34,18 @@ export const aoiApi = {
     return response.data;
   },
 
-  update: async (id: string, data: IUpdateAoiRequest): Promise<ApiSuccessResponse<IAoiWithStats>> => {
+  update: async (
+    id: string,
+    data: IUpdateAoiRequest,
+  ): Promise<ApiSuccessResponse<IAoiWithStats>> => {
     const response = await apiClient.patch<ApiSuccessResponse<IAoiWithStats>>(`/aois/${id}`, data);
     return response.data;
   },
 
   delete: async (id: string): Promise<ApiSuccessResponse<{ success: boolean }>> => {
-    const response = await apiClient.delete<ApiSuccessResponse<{ success: boolean }>>(`/aois/${id}`);
+    const response = await apiClient.delete<ApiSuccessResponse<{ success: boolean }>>(
+      `/aois/${id}`,
+    );
     return response.data;
   },
 };

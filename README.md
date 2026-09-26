@@ -1,4 +1,5 @@
 # 🌍 SAT-MSS
+
 ## Satellite Mining Surveillance System
 
 > **An AI-Assisted Earth Observation & Geospatial Intelligence Platform for Satellite-Based Land Disturbance Monitoring**
@@ -131,25 +132,25 @@ AI / Remote Sensing Pipeline
 
 - Python
 - FastAPI
-- Google Earth Engine *(Upcoming Integration)*
-- GDAL *(Planned)*
-- Rasterio *(Planned)*
-- GeoPandas *(Planned)*
-- Shapely *(Planned)*
-- PyProj *(Planned)*
-- NumPy *(Planned)*
-- OpenCV *(Planned)*
-- PyTorch *(Future AI Module)*
+- Google Earth Engine _(Upcoming Integration)_
+- GDAL _(Planned)_
+- Rasterio _(Planned)_
+- GeoPandas _(Planned)_
+- Shapely _(Planned)_
+- PyProj _(Planned)_
+- NumPy _(Planned)_
+- OpenCV _(Planned)_
+- PyTorch _(Future AI Module)_
 
 ---
 
 ## Remote Sensing
 
-- Sentinel-2 *(Upcoming)*
-- Sentinel-1 *(Future)*
-- NDVI *(Upcoming)*
-- NDWI *(Future)*
-- Change Detection *(Upcoming)*
+- Sentinel-2 _(Upcoming)_
+- Sentinel-1 _(Future)_
+- NDVI _(Upcoming)_
+- NDWI _(Future)_
+- Change Detection _(Upcoming)_
 
 ---
 
@@ -175,7 +176,7 @@ AI / Remote Sensing Pipeline
 - TanStack Query
 - React Hook Form
 - Framer Motion
-- CesiumJS *(Sprint 2)*
+- CesiumJS _(Sprint 2)_
 
 ---
 
@@ -227,14 +228,14 @@ SAT-MSS/
 
 This project follows a Documentation-First Software Engineering approach.
 
-| Document | Status |
-|----------|--------|
-| Product Requirements Document | ✅ |
-| Software Requirements Specification | ✅ |
-| Product Experience Design | ✅ |
-| Implementation Blueprint | ✅ |
-| Sprint 1 | ✅ |
-| Sprint 2 | 🚧 |
+| Document                            | Status |
+| ----------------------------------- | ------ |
+| Product Requirements Document       | ✅     |
+| Software Requirements Specification | ✅     |
+| Product Experience Design           | ✅     |
+| Implementation Blueprint            | ✅     |
+| Sprint 1                            | ✅     |
+| Sprint 2                            | 🚧     |
 
 ---
 

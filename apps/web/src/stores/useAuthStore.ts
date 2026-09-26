@@ -31,7 +31,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     if (typeof window === 'undefined') return;
     const token = localStorage.getItem('satmss_token');
     const userJson = localStorage.getItem('satmss_user');
-    
+
     if (token && userJson) {
       try {
         const user = JSON.parse(userJson) as IUser;

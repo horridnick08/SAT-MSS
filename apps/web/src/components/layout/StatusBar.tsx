@@ -22,9 +22,7 @@ export default function StatusBar() {
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
-      setTime(
-        now.toISOString().replace('T', ' ').substring(0, 19) + ' UTC'
-      );
+      setTime(now.toISOString().replace('T', ' ').substring(0, 19) + ' UTC');
     };
 
     updateTime();
@@ -39,9 +37,9 @@ export default function StatusBar() {
         // Dynamically locate Express base health URL from environment
         const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1';
         const healthUrl = apiBaseUrl.replace('/api/v1', '').replace('/api', '') + '/health';
-        
+
         const response = await axios.get(healthUrl, { timeout: 3000 });
-        
+
         if (response.status === 200 && response.data?.status === 'healthy') {
           setStatus({
             api: 'connected',
@@ -94,7 +92,7 @@ export default function StatusBar() {
   };
 
   return (
-    <footer className="flex h-8 w-full items-center justify-between border-t border-[#2A3547]/50 bg-[#06080D]/95 px-6 z-30 font-mono text-[9px] tracking-widest text-[#8A9BBB] select-none">
+    <footer className="z-30 flex h-8 w-full select-none items-center justify-between border-t border-[#2A3547]/50 bg-[#06080D]/95 px-6 font-mono text-[9px] tracking-widest text-[#8A9BBB]">
       {/* System Status Indicators */}
       <div className="flex items-center gap-4">
         {/* API connection */}
@@ -102,8 +100,8 @@ export default function StatusBar() {
           <Wifi className="h-3 w-3 text-[#4E5D7A]" />
           <span>API:</span>
           <span
-            className={`px-1.5 py-0.5 rounded border text-[8px] font-bold ${getStatusColor(
-              status.api
+            className={`rounded border px-1.5 py-0.5 text-[8px] font-bold ${getStatusColor(
+              status.api,
             )}`}
           >
             {getStatusText(status.api)}
@@ -115,8 +113,8 @@ export default function StatusBar() {
           <HardDrive className="h-3 w-3 text-[#4E5D7A]" />
           <span>DB:</span>
           <span
-            className={`px-1.5 py-0.5 rounded border text-[8px] font-bold ${getStatusColor(
-              status.database
+            className={`rounded border px-1.5 py-0.5 text-[8px] font-bold ${getStatusColor(
+              status.database,
             )}`}
           >
             {getStatusText(status.database)}
@@ -128,8 +126,8 @@ export default function StatusBar() {
           <ShieldCheck className="h-3 w-3 text-[#4E5D7A]" />
           <span>REDIS:</span>
           <span
-            className={`px-1.5 py-0.5 rounded border text-[8px] font-bold ${getStatusColor(
-              status.redis
+            className={`rounded border px-1.5 py-0.5 text-[8px] font-bold ${getStatusColor(
+              status.redis,
             )}`}
           >
             {getStatusText(status.redis)}
@@ -139,9 +137,9 @@ export default function StatusBar() {
 
       {/* Right User Auth indicator & Digital Clock */}
       <div className="flex items-center gap-6">
-        <div className="flex items-center gap-1.5 text-[#1AABB0] bg-[#1AABB0]/5 px-2 py-0.5 rounded border border-[#1AABB0]/15">
+        <div className="flex items-center gap-1.5 rounded border border-[#1AABB0]/15 bg-[#1AABB0]/5 px-2 py-0.5 text-[#1AABB0]">
           <UserCheck className="h-3 w-3" />
-          <span className="text-[8px] font-bold font-sans">SECURE SYSTEM AUTHENTICATED</span>
+          <span className="font-sans text-[8px] font-bold">SECURE SYSTEM AUTHENTICATED</span>
         </div>
 
         <div className="flex items-center gap-1.5 text-[#E8EAF0]">

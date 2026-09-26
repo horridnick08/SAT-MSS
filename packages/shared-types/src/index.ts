@@ -82,13 +82,19 @@ export interface GeoJSONMultiPolygon {
 
 export type GeoJSONGeometry = GeoJSONPoint | GeoJSONPolygon | GeoJSONMultiPolygon;
 
-export interface GeoJSONFeature<G extends GeoJSONGeometry = GeoJSONGeometry, P = Record<string, unknown>> {
+export interface GeoJSONFeature<
+  G extends GeoJSONGeometry = GeoJSONGeometry,
+  P = Record<string, unknown>,
+> {
   type: 'Feature';
   geometry: G;
   properties: P;
 }
 
-export interface GeoJSONFeatureCollection<G extends GeoJSONGeometry = GeoJSONGeometry, P = Record<string, unknown>> {
+export interface GeoJSONFeatureCollection<
+  G extends GeoJSONGeometry = GeoJSONGeometry,
+  P = Record<string, unknown>,
+> {
   type: 'FeatureCollection';
   features: Array<GeoJSONFeature<G, P>>;
 }

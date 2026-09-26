@@ -13,7 +13,7 @@ export const geometryPolygon = customType<{
   },
   fromDriver(value) {
     return value;
-  }
+  },
 });
 
 // Custom PostGIS MultiPolygon type mapping
@@ -29,7 +29,7 @@ export const geometryMultiPolygon = customType<{
   },
   fromDriver(value) {
     return value;
-  }
+  },
 });
 
 // Custom PostGIS Point type mapping
@@ -45,5 +45,5 @@ export const geometryPoint = customType<{
   },
   fromDriver(value) {
     return value;
-  }
+  },
 });

@@ -345,9 +345,9 @@ export const useAoiStore = create<AoiState>((set, get) => ({
       const loaded = response.data.map((savedAoi) => {
         const coords = savedAoi.geometry.coordinates[0];
         // slice(0, -1) to exclude duplicate closing vertex for rendering handle
-        const points = coords.slice(0, -1).map(([lng, lat]: [number, number]) =>
-          Cesium.Cartesian3.fromDegrees(lng, lat)
-        );
+        const points = coords
+          .slice(0, -1)
+          .map(([lng, lat]: [number, number]) => Cesium.Cartesian3.fromDegrees(lng, lat));
         const boundingSphere = Cesium.BoundingSphere.fromPoints(points);
 
         return {
@@ -402,9 +402,9 @@ export const useAoiStore = create<AoiState>((set, get) => ({
 
       const savedAoi = response.data;
       const coords = savedAoi.geometry.coordinates[0];
-      const points = coords.slice(0, -1).map(([lng, lat]: [number, number]) =>
-        Cesium.Cartesian3.fromDegrees(lng, lat)
-      );
+      const points = coords
+        .slice(0, -1)
+        .map(([lng, lat]: [number, number]) => Cesium.Cartesian3.fromDegrees(lng, lat));
       const boundingSphere = Cesium.BoundingSphere.fromPoints(points);
 
       const draftAoi: DraftAoi = {

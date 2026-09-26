@@ -4,8 +4,12 @@ import { geometryMultiPolygon } from './customTypes.js';
 import { boundaryDatasets } from './boundaryDatasets.js';
 
 export const boundaryPolygons = pgTable('boundary_polygons', {
-  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
-  datasetId: uuid('dataset_id').notNull().references(() => boundaryDatasets.id, { onDelete: 'restrict' }),
+  id: uuid('id')
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  datasetId: uuid('dataset_id')
+    .notNull()
+    .references(() => boundaryDatasets.id, { onDelete: 'restrict' }),
   name: varchar('name', { length: 200 }).notNull(),
   permitNumber: varchar('permit_number', { length: 100 }),
   permitStatus: varchar('permit_status', { length: 50 }),

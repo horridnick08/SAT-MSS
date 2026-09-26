@@ -22,7 +22,9 @@ export function cartesianArrayToLngLats(points: Cesium.Cartesian3[]): [number, n
  * Converts an array of Cesium.Cartesian3 coordinates to a standard closed GeoJSON Polygon geometry coordinate hierarchy.
  * Automatically ensures the first and last coordinates are identical.
  */
-export function cartesianArrayToGeoJsonPolygonCoordinates(points: Cesium.Cartesian3[]): [number, number][][] {
+export function cartesianArrayToGeoJsonPolygonCoordinates(
+  points: Cesium.Cartesian3[],
+): [number, number][][] {
   const lngLats = cartesianArrayToLngLats(points);
   if (lngLats.length > 0) {
     const first = lngLats[0];

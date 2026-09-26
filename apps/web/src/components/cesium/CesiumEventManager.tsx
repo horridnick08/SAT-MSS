@@ -38,7 +38,7 @@ export default function CesiumEventManager() {
       handler.setInputAction((event: { position: Cesium.Cartesian2 }) => {
         const ray = viewer.camera.getPickRay(event.position);
         if (!ray) return;
-        
+
         let cartesian = viewer.scene.globe.pick(ray, viewer.scene);
         if (!Cesium.defined(cartesian)) {
           cartesian = viewer.camera.pickEllipsoid(event.position, viewer.scene.globe.ellipsoid);

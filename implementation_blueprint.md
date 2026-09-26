@@ -1,19 +1,21 @@
 # Final Implementation Blueprint
+
 ## SAT-MSS — Satellite Mining Surveillance System
+
 ### Developer Handbook · Version 1.0 · India MVP
 
 ---
 
-| Document Control | |
-|---|---|
-| **Document ID** | IBP-SATMSS-001 |
-| **Version** | 1.0.0 |
-| **Status** | Final — Development Approved |
-| **Authority** | Chief Software Architect / Technical Program Manager |
-| **Classification** | Internal — Engineering Confidential |
-| **Source Documents** | PRD (`problem_definition.md`) · SRS (`srs_document.md`) · PXD (`pxd_document.md`) |
-| **Date Issued** | 2026-07-19 |
-| **Development Start** | Post stakeholder sign-off on this document |
+| Document Control      |                                                                                   |
+| --------------------- | --------------------------------------------------------------------------------- |
+| **Document ID**       | IBP-SATMSS-001                                                                    |
+| **Version**           | 1.0.0                                                                             |
+| **Status**            | Final — Development Approved                                                      |
+| **Authority**         | Chief Software Architect / Technical Program Manager                              |
+| **Classification**    | Internal — Engineering Confidential                                               |
+| **Source Documents**  | PRD (`problem_definition.md`) · SRS (`srs_document.md`) · PXD (`pxd_document.md`) |
+| **Date Issued**       | 2026-07-19                                                                        |
+| **Development Start** | Post stakeholder sign-off on this document                                        |
 
 > **NOTICE:** This is the final planning document for SAT-MSS Version 1.0. No further planning artifacts will be produced unless requirements formally change via the Change Request process. All architectural decisions herein are binding for the MVP delivery.
 
@@ -130,18 +132,18 @@ satmss/
 
 Each module within the backend API is a self-contained directory. Modules communicate exclusively through their exported service interfaces — never through direct database queries across module boundaries.
 
-| Module | Responsibility | Owned Tables |
-|---|---|---|
-| `auth` | Authentication, session management, RBAC enforcement | `users`, `sessions`, `roles` |
-| `aoi` | AOI CRUD, boundary management, district/state assignment | `aois`, `aoi_versions` |
-| `imagery` | Scene catalog, ingestion log, band metadata | `imagery_scenes`, `ingestion_log` |
-| `boundaries` | Concession and protected area boundary import and versioning | `boundary_datasets`, `boundary_polygons` |
-| `analysis` | Analysis run orchestration, result storage, GSE job dispatch | `analysis_runs`, `change_zones` |
-| `alerts` | Alert lifecycle, triage, deduplication, notification dispatch | `alerts`, `alert_status_log` |
-| `cases` | Case file compilation, PDF generation, export, audit trail | `case_files`, `case_file_audit` |
-| `reports` | Operational dashboard aggregations, metrics | (read-only cross-module queries) |
-| `admin` | User management, severity weight configuration, system health | `severity_config`, `system_settings` |
-| `notifications` | Email and in-platform notification delivery | `notifications` |
+| Module          | Responsibility                                                | Owned Tables                             |
+| --------------- | ------------------------------------------------------------- | ---------------------------------------- |
+| `auth`          | Authentication, session management, RBAC enforcement          | `users`, `sessions`, `roles`             |
+| `aoi`           | AOI CRUD, boundary management, district/state assignment      | `aois`, `aoi_versions`                   |
+| `imagery`       | Scene catalog, ingestion log, band metadata                   | `imagery_scenes`, `ingestion_log`        |
+| `boundaries`    | Concession and protected area boundary import and versioning  | `boundary_datasets`, `boundary_polygons` |
+| `analysis`      | Analysis run orchestration, result storage, GSE job dispatch  | `analysis_runs`, `change_zones`          |
+| `alerts`        | Alert lifecycle, triage, deduplication, notification dispatch | `alerts`, `alert_status_log`             |
+| `cases`         | Case file compilation, PDF generation, export, audit trail    | `case_files`, `case_file_audit`          |
+| `reports`       | Operational dashboard aggregations, metrics                   | (read-only cross-module queries)         |
+| `admin`         | User management, severity weight configuration, system health | `severity_config`, `system_settings`     |
+| `notifications` | Email and in-platform notification delivery                   | `notifications`                          |
 
 ### 1.4 Dependency Graph
 
@@ -164,14 +166,14 @@ gse ─────────────────────────�
 
 ### 1.5 Inter-Service Communication
 
-| Channel | Direction | Protocol | Usage |
-|---|---|---|---|
-| REST API | web → api | HTTPS | All user-initiated actions |
-| WebSocket | api → web | WSS | Real-time alerts, analysis progress |
-| Internal REST | api → gse | HTTP (internal network) | Dispatch analysis jobs |
-| Message Queue | api ↔ gse | Redis Pub/Sub | Job status callbacks |
-| Object Storage | gse ↔ storage | S3-compatible API | Imagery tile read/write |
-| SMTP | api → email | SMTP/TLS | Alert email notifications |
+| Channel        | Direction     | Protocol                | Usage                               |
+| -------------- | ------------- | ----------------------- | ----------------------------------- |
+| REST API       | web → api     | HTTPS                   | All user-initiated actions          |
+| WebSocket      | api → web     | WSS                     | Real-time alerts, analysis progress |
+| Internal REST  | api → gse     | HTTP (internal network) | Dispatch analysis jobs              |
+| Message Queue  | api ↔ gse     | Redis Pub/Sub           | Job status callbacks                |
+| Object Storage | gse ↔ storage | S3-compatible API       | Imagery tile read/write             |
+| SMTP           | api → email   | SMTP/TLS                | Alert email notifications           |
 
 ---
 
@@ -181,68 +183,68 @@ Every technology choice below is justified by the system's requirements from the
 
 ### 2.1 Frontend
 
-| Technology | Version | Justification |
-|---|---|---|
-| **Next.js** | 14.x (App Router) | SSR capabilities for initial load performance (NFR-002). Built-in API routes for lightweight BFF patterns. Strong TypeScript support. Industry-standard React framework. |
-| **React** | 18.x | Component-based architecture required for the complex, layered Mission Control UI (PXD §8). Concurrent rendering improves perceived performance during Cesium globe transitions. |
-| **CesiumJS** | 1.118+ | The only open-source, browser-native 3D globe rendering library capable of photorealistic terrain, WGS84-accurate polygon draping, and camera choreography matching PXD §6. No alternative (Mapbox, Leaflet) provides equivalent 3D terrain with satellite imagery draping. |
-| **Resium** | Latest | React bindings for CesiumJS. Allows Cesium entities to be declared as React components, enabling controlled state management of globe entities without imperative DOM-style coding. |
-| **Zustand** | 4.x | Lightweight, fast state management. SAT-MSS requires complex, shared state across the Mission Control panels (active AOI, current analysis, timeline position, active alert). Zustand outperforms Redux for this non-hierarchical state topology without boilerplate overhead. |
-| **React Query (TanStack)** | 5.x | Server state management, caching, and automatic background refetching for alert feeds and dashboard data. Eliminates manual loading/error state management across 40+ API calls. |
-| **TypeScript** | 5.x | Mandatory. The geospatial data models (GeoJSON, WGS84 coordinates, analysis results) are complex nested structures. TypeScript prevents an entire class of runtime errors that would be catastrophic in a forensic evidence system. |
-| **Tailwind CSS** | 3.x | Utility-first CSS for rapid, consistent implementation of the Orbital Glass design system (PXD §15). Custom CSS properties are used for the glassmorphism values; Tailwind handles layout, spacing, and responsive utilities. |
-| **Framer Motion** | 10.x | Declarative animation library for implementing the 13 animation tokens defined in PXD §11.2. Handles panel slide-ins, fade transitions, and staggered zone appearance. |
-| **React Hook Form + Zod** | Latest | Form management and validation for AOI confirmation, report assembly, and user management forms. Zod schemas are shared with the backend via `shared-types` package. |
-| **Recharts** | 2.x | The change area timeline sparkline chart (PXD §18.4). Recharts is SVG-based, composable, and integrates cleanly with React state without a separate charting runtime. |
+| Technology                 | Version           | Justification                                                                                                                                                                                                                                                                  |
+| -------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Next.js**                | 14.x (App Router) | SSR capabilities for initial load performance (NFR-002). Built-in API routes for lightweight BFF patterns. Strong TypeScript support. Industry-standard React framework.                                                                                                       |
+| **React**                  | 18.x              | Component-based architecture required for the complex, layered Mission Control UI (PXD §8). Concurrent rendering improves perceived performance during Cesium globe transitions.                                                                                               |
+| **CesiumJS**               | 1.118+            | The only open-source, browser-native 3D globe rendering library capable of photorealistic terrain, WGS84-accurate polygon draping, and camera choreography matching PXD §6. No alternative (Mapbox, Leaflet) provides equivalent 3D terrain with satellite imagery draping.    |
+| **Resium**                 | Latest            | React bindings for CesiumJS. Allows Cesium entities to be declared as React components, enabling controlled state management of globe entities without imperative DOM-style coding.                                                                                            |
+| **Zustand**                | 4.x               | Lightweight, fast state management. SAT-MSS requires complex, shared state across the Mission Control panels (active AOI, current analysis, timeline position, active alert). Zustand outperforms Redux for this non-hierarchical state topology without boilerplate overhead. |
+| **React Query (TanStack)** | 5.x               | Server state management, caching, and automatic background refetching for alert feeds and dashboard data. Eliminates manual loading/error state management across 40+ API calls.                                                                                               |
+| **TypeScript**             | 5.x               | Mandatory. The geospatial data models (GeoJSON, WGS84 coordinates, analysis results) are complex nested structures. TypeScript prevents an entire class of runtime errors that would be catastrophic in a forensic evidence system.                                            |
+| **Tailwind CSS**           | 3.x               | Utility-first CSS for rapid, consistent implementation of the Orbital Glass design system (PXD §15). Custom CSS properties are used for the glassmorphism values; Tailwind handles layout, spacing, and responsive utilities.                                                  |
+| **Framer Motion**          | 10.x              | Declarative animation library for implementing the 13 animation tokens defined in PXD §11.2. Handles panel slide-ins, fade transitions, and staggered zone appearance.                                                                                                         |
+| **React Hook Form + Zod**  | Latest            | Form management and validation for AOI confirmation, report assembly, and user management forms. Zod schemas are shared with the backend via `shared-types` package.                                                                                                           |
+| **Recharts**               | 2.x               | The change area timeline sparkline chart (PXD §18.4). Recharts is SVG-based, composable, and integrates cleanly with React state without a separate charting runtime.                                                                                                          |
 
 ### 2.2 Backend (API)
 
-| Technology | Version | Justification |
-|---|---|---|
-| **Node.js** | 20.x LTS | Runtime for the API server. The API is predominantly I/O-bound (database queries, GSE dispatch, storage calls), which Node's event loop handles efficiently. V8 performance is sufficient for REST workloads. |
-| **Express.js** | 4.x | Minimal, well-understood HTTP framework. The modular monolith structure requires precise control over request routing and middleware composition that Express provides without opinionated scaffolding. |
-| **TypeScript** | 5.x | Same rationale as frontend. Shared types package requires TypeScript on both sides of the API contract. |
-| **Drizzle ORM** | Latest | Type-safe SQL query builder that generates native PostgreSQL queries. Unlike Prisma, Drizzle does not abstract PostGIS spatial functions away — analysts' queries like `ST_Intersects`, `ST_Distance`, and `ST_Area` are expressible as typed Drizzle extensions. Critical for the concession intersection logic (FR-010). |
-| **Socket.IO** | 4.x | WebSocket implementation for real-time features: analysis progress streaming (SCR-08), alert notifications (FR-016), and live dashboard metric updates. |
-| **Bull + Redis** | Bull 4.x / Redis 7 | Job queue for background processing: PDF report generation, email dispatch, imagery metadata sync. Provides job retry, dead-letter queuing, and job progress events. |
-| **Nodemailer** | Latest | SMTP email dispatch for alert notifications (FR-016). Supports authenticated SMTP, TLS, and template-based emails. |
-| **Passport.js + JWT** | Latest | Authentication. Passport handles the strategy pattern (local credentials, future SAML/OAuth extension). JWTs carry the RBAC role claim, enabling stateless permission checks on every route. |
-| **Argon2** | Latest | Password hashing. Argon2id is the current gold standard for server-side password storage, preferred over bcrypt for its memory-hardness properties. |
-| **Puppeteer** | Latest | Headless Chrome for PDF report generation (FR-022). The report PDF is rendered from an HTML template, allowing pixel-perfect formatting matching the PXD §22.4 specification. |
-| **Zod** | 3.x | Runtime validation of all API request bodies and query parameters. Schema definitions live in `shared-types` and are imported by both API route handlers and frontend forms. |
-| **Winston** | Latest | Structured logging. All log entries are JSON-formatted with correlation IDs, enabling log aggregation and forensic tracing of the immutable audit trail (FR-023). |
+| Technology            | Version            | Justification                                                                                                                                                                                                                                                                                                              |
+| --------------------- | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Node.js**           | 20.x LTS           | Runtime for the API server. The API is predominantly I/O-bound (database queries, GSE dispatch, storage calls), which Node's event loop handles efficiently. V8 performance is sufficient for REST workloads.                                                                                                              |
+| **Express.js**        | 4.x                | Minimal, well-understood HTTP framework. The modular monolith structure requires precise control over request routing and middleware composition that Express provides without opinionated scaffolding.                                                                                                                    |
+| **TypeScript**        | 5.x                | Same rationale as frontend. Shared types package requires TypeScript on both sides of the API contract.                                                                                                                                                                                                                    |
+| **Drizzle ORM**       | Latest             | Type-safe SQL query builder that generates native PostgreSQL queries. Unlike Prisma, Drizzle does not abstract PostGIS spatial functions away — analysts' queries like `ST_Intersects`, `ST_Distance`, and `ST_Area` are expressible as typed Drizzle extensions. Critical for the concession intersection logic (FR-010). |
+| **Socket.IO**         | 4.x                | WebSocket implementation for real-time features: analysis progress streaming (SCR-08), alert notifications (FR-016), and live dashboard metric updates.                                                                                                                                                                    |
+| **Bull + Redis**      | Bull 4.x / Redis 7 | Job queue for background processing: PDF report generation, email dispatch, imagery metadata sync. Provides job retry, dead-letter queuing, and job progress events.                                                                                                                                                       |
+| **Nodemailer**        | Latest             | SMTP email dispatch for alert notifications (FR-016). Supports authenticated SMTP, TLS, and template-based emails.                                                                                                                                                                                                         |
+| **Passport.js + JWT** | Latest             | Authentication. Passport handles the strategy pattern (local credentials, future SAML/OAuth extension). JWTs carry the RBAC role claim, enabling stateless permission checks on every route.                                                                                                                               |
+| **Argon2**            | Latest             | Password hashing. Argon2id is the current gold standard for server-side password storage, preferred over bcrypt for its memory-hardness properties.                                                                                                                                                                        |
+| **Puppeteer**         | Latest             | Headless Chrome for PDF report generation (FR-022). The report PDF is rendered from an HTML template, allowing pixel-perfect formatting matching the PXD §22.4 specification.                                                                                                                                              |
+| **Zod**               | 3.x                | Runtime validation of all API request bodies and query parameters. Schema definitions live in `shared-types` and are imported by both API route handlers and frontend forms.                                                                                                                                               |
+| **Winston**           | Latest             | Structured logging. All log entries are JSON-formatted with correlation IDs, enabling log aggregation and forensic tracing of the immutable audit trail (FR-023).                                                                                                                                                          |
 
 ### 2.3 Geospatial Engine (GSE)
 
-| Technology | Version | Justification |
-|---|---|---|
-| **Python** | 3.11+ | Standard language for Earth Observation and geospatial scientific computing. The ecosystem of GDAL, Rasterio, NumPy, and Scikit-image is Python-native. No other language matches this library depth for EO processing. |
-| **FastAPI** | 0.110+ | The GSE exposes an internal REST API to the Node.js backend for job dispatch. FastAPI provides async support, automatic OpenAPI docs, and Pydantic validation with minimal overhead. |
-| **GDAL** | 3.8+ | Foundation of all geospatial data I/O. Reading Sentinel-2 .SAFE packages, reprojecting rasters, writing GeoTIFF outputs. GDAL is the de-facto standard for all professional geospatial processing. |
-| **Rasterio** | 1.3+ | Pythonic wrapper over GDAL for raster operations. Used for band reading, windowed reads (memory-efficient processing of large scenes), and writing output rasters. |
-| **NumPy** | 1.26+ | Array-based computation for pixel-level operations — NDVI calculation, pixel difference arrays, threshold masking. All band data is loaded as NumPy arrays. |
-| **Scikit-image** | 0.22+ | Image processing algorithms: morphological operations (erosion/dilation for noise removal), connected component labeling (individual change zone identification), and region property measurement (zone area, centroid). |
-| **Shapely** | 2.x | Geometric operations in Python: polygon intersection, union, buffering (for proximity calculations in severity scoring). Shapely 2.x uses GEOS 3.12 and provides significant performance improvements. |
-| **GeoPandas** | 0.14+ | Tabular operations on geospatial data: loading concession boundary shapefiles, spatial joins, dissolve operations. Wraps Shapely and Fiona. |
-| **Celery** | 5.x | Distributed task queue for analysis jobs. Analysis runs are dispatched as Celery tasks, enabling concurrent processing of multiple AOIs (NFR-003). Redis serves as both the Celery broker and result backend. |
-| **sentinelsat** | 1.x | Python client for the Copernicus Open Access Hub API. Used by the imagery ingestion job to search and download Sentinel-1 and Sentinel-2 scenes for registered AOIs (FR-001, FR-002). |
+| Technology       | Version | Justification                                                                                                                                                                                                            |
+| ---------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Python**       | 3.11+   | Standard language for Earth Observation and geospatial scientific computing. The ecosystem of GDAL, Rasterio, NumPy, and Scikit-image is Python-native. No other language matches this library depth for EO processing.  |
+| **FastAPI**      | 0.110+  | The GSE exposes an internal REST API to the Node.js backend for job dispatch. FastAPI provides async support, automatic OpenAPI docs, and Pydantic validation with minimal overhead.                                     |
+| **GDAL**         | 3.8+    | Foundation of all geospatial data I/O. Reading Sentinel-2 .SAFE packages, reprojecting rasters, writing GeoTIFF outputs. GDAL is the de-facto standard for all professional geospatial processing.                       |
+| **Rasterio**     | 1.3+    | Pythonic wrapper over GDAL for raster operations. Used for band reading, windowed reads (memory-efficient processing of large scenes), and writing output rasters.                                                       |
+| **NumPy**        | 1.26+   | Array-based computation for pixel-level operations — NDVI calculation, pixel difference arrays, threshold masking. All band data is loaded as NumPy arrays.                                                              |
+| **Scikit-image** | 0.22+   | Image processing algorithms: morphological operations (erosion/dilation for noise removal), connected component labeling (individual change zone identification), and region property measurement (zone area, centroid). |
+| **Shapely**      | 2.x     | Geometric operations in Python: polygon intersection, union, buffering (for proximity calculations in severity scoring). Shapely 2.x uses GEOS 3.12 and provides significant performance improvements.                   |
+| **GeoPandas**    | 0.14+   | Tabular operations on geospatial data: loading concession boundary shapefiles, spatial joins, dissolve operations. Wraps Shapely and Fiona.                                                                              |
+| **Celery**       | 5.x     | Distributed task queue for analysis jobs. Analysis runs are dispatched as Celery tasks, enabling concurrent processing of multiple AOIs (NFR-003). Redis serves as both the Celery broker and result backend.            |
+| **sentinelsat**  | 1.x     | Python client for the Copernicus Open Access Hub API. Used by the imagery ingestion job to search and download Sentinel-1 and Sentinel-2 scenes for registered AOIs (FR-001, FR-002).                                    |
 
 ### 2.4 Database
 
-| Technology | Version | Justification |
-|---|---|---|
-| **PostgreSQL** | 16.x | Relational database. The combination of ACID compliance (required for the immutable audit trail — FR-023), PostGIS extension, and mature ecosystem make PostgreSQL the only viable choice for a system with both relational and geospatial data requirements. |
-| **PostGIS** | 3.4+ | Spatial extension for PostgreSQL. Enables native storage of geometry columns (AOI polygons, change zone boundaries, concession polygons), and execution of spatial queries (`ST_Intersects`, `ST_Distance`, `ST_Area`) in SQL. Eliminates round-trips to the application layer for spatial operations. |
-| **Redis** | 7.x | Multi-purpose in-memory store: Celery message broker, Bull job queue backend, API response caching (dashboard aggregations), and WebSocket session state. |
+| Technology     | Version | Justification                                                                                                                                                                                                                                                                                          |
+| -------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **PostgreSQL** | 16.x    | Relational database. The combination of ACID compliance (required for the immutable audit trail — FR-023), PostGIS extension, and mature ecosystem make PostgreSQL the only viable choice for a system with both relational and geospatial data requirements.                                          |
+| **PostGIS**    | 3.4+    | Spatial extension for PostgreSQL. Enables native storage of geometry columns (AOI polygons, change zone boundaries, concession polygons), and execution of spatial queries (`ST_Intersects`, `ST_Distance`, `ST_Area`) in SQL. Eliminates round-trips to the application layer for spatial operations. |
+| **Redis**      | 7.x     | Multi-purpose in-memory store: Celery message broker, Bull job queue backend, API response caching (dashboard aggregations), and WebSocket session state.                                                                                                                                              |
 
 ### 2.5 Infrastructure
 
-| Technology | Justification |
-|---|---|
-| **Docker + Docker Compose** | All services containerized. Local development uses Docker Compose. Production uses Docker Swarm or equivalent. Ensures environment parity across developer machines and deployment targets. |
-| **MinIO** | S3-compatible object storage for imagery tiles and case file exports. Self-hosted for data sovereignty compliance (SRS C-03). The Node.js SDK and Python boto3 client both support the S3 API, enabling transparent migration to AWS S3 or GCP GCS if required. |
-| **Nginx** | Reverse proxy in front of all services. Handles TLS termination, request routing (web, api, gse internal), rate limiting, and static asset serving. |
-| **GitHub Actions** | CI/CD pipeline. Lint, type-check, test, build, and deploy on every pull request merge. |
+| Technology                  | Justification                                                                                                                                                                                                                                                   |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Docker + Docker Compose** | All services containerized. Local development uses Docker Compose. Production uses Docker Swarm or equivalent. Ensures environment parity across developer machines and deployment targets.                                                                     |
+| **MinIO**                   | S3-compatible object storage for imagery tiles and case file exports. Self-hosted for data sovereignty compliance (SRS C-03). The Node.js SDK and Python boto3 client both support the S3 API, enabling transparent migration to AWS S3 or GCP GCS if required. |
+| **Nginx**                   | Reverse proxy in front of all services. Handles TLS termination, request routing (web, api, gse internal), rate limiting, and static asset serving.                                                                                                             |
+| **GitHub Actions**          | CI/CD pipeline. Lint, type-check, test, build, and deploy on every pull request merge.                                                                                                                                                                          |
 
 ---
 
@@ -251,6 +253,7 @@ Every technology choice below is justified by the system's requirements from the
 ### 3.1 Coding Conventions
 
 **TypeScript (Web + API):**
+
 - Strict mode enabled: `"strict": true` in all `tsconfig.json` files.
 - No `any` types permitted without an explicit `// eslint-disable-next-line @typescript-eslint/no-explicit-any` comment and justification.
 - All exported functions must have explicit return type annotations.
@@ -259,6 +262,7 @@ Every technology choice below is justified by the system's requirements from the
 - No default exports from module files — named exports only. Default exports are permitted only in Next.js `page.tsx` files (framework requirement).
 
 **Python (GSE):**
+
 - PEP 8 enforced via `ruff` linter.
 - Type hints on all function signatures (`mypy` in strict mode).
 - Docstrings on all public functions and classes (Google style).
@@ -267,22 +271,22 @@ Every technology choice below is justified by the system's requirements from the
 
 ### 3.2 Naming Conventions
 
-| Concern | Convention | Examples |
-|---|---|---|
-| TypeScript variables | `camelCase` | `alertSeverityScore`, `aoiPolygon` |
-| TypeScript constants | `SCREAMING_SNAKE_CASE` | `MAX_AOI_COUNT`, `ALERT_STATUS_PENDING` |
-| TypeScript interfaces | `PascalCase` with `I` prefix | `IAoiRecord`, `IAnalysisResult` |
-| TypeScript types | `PascalCase` | `AlertStatus`, `IntersectionCategory` |
-| React components | `PascalCase` | `AlertQueuePanel`, `CesiumGlobeViewer` |
-| React hooks | `camelCase` with `use` prefix | `useAoiSelection`, `useAnalysisProgress` |
-| CSS class names | `kebab-case` | `mission-control-panel`, `alert-severity-chip` |
-| API route paths | `kebab-case`, plural resources | `/api/v1/aois`, `/api/v1/case-files` |
-| Database tables | `snake_case`, plural | `alert_status_log`, `boundary_datasets` |
-| Database columns | `snake_case` | `created_at`, `aoi_id`, `severity_score` |
-| Python functions | `snake_case` | `calculate_ndvi_delta`, `run_change_detection` |
-| Python classes | `PascalCase` | `ChangeDetectionPipeline`, `SceneIngestionJob` |
-| Environment variables | `SCREAMING_SNAKE_CASE` | `DATABASE_URL`, `GSE_INTERNAL_SECRET` |
-| Git branches | `kebab-case` with prefix | `feat/aoi-drawing`, `fix/alert-dedup-logic` |
+| Concern               | Convention                     | Examples                                       |
+| --------------------- | ------------------------------ | ---------------------------------------------- |
+| TypeScript variables  | `camelCase`                    | `alertSeverityScore`, `aoiPolygon`             |
+| TypeScript constants  | `SCREAMING_SNAKE_CASE`         | `MAX_AOI_COUNT`, `ALERT_STATUS_PENDING`        |
+| TypeScript interfaces | `PascalCase` with `I` prefix   | `IAoiRecord`, `IAnalysisResult`                |
+| TypeScript types      | `PascalCase`                   | `AlertStatus`, `IntersectionCategory`          |
+| React components      | `PascalCase`                   | `AlertQueuePanel`, `CesiumGlobeViewer`         |
+| React hooks           | `camelCase` with `use` prefix  | `useAoiSelection`, `useAnalysisProgress`       |
+| CSS class names       | `kebab-case`                   | `mission-control-panel`, `alert-severity-chip` |
+| API route paths       | `kebab-case`, plural resources | `/api/v1/aois`, `/api/v1/case-files`           |
+| Database tables       | `snake_case`, plural           | `alert_status_log`, `boundary_datasets`        |
+| Database columns      | `snake_case`                   | `created_at`, `aoi_id`, `severity_score`       |
+| Python functions      | `snake_case`                   | `calculate_ndvi_delta`, `run_change_detection` |
+| Python classes        | `PascalCase`                   | `ChangeDetectionPipeline`, `SceneIngestionJob` |
+| Environment variables | `SCREAMING_SNAKE_CASE`         | `DATABASE_URL`, `GSE_INTERNAL_SECRET`          |
+| Git branches          | `kebab-case` with prefix       | `feat/aoi-drawing`, `fix/alert-dedup-logic`    |
 
 ### 3.3 Git Strategy
 
@@ -298,6 +302,7 @@ main           ← Production-ready code only. Tagged releases.
 ```
 
 **Rules:**
+
 - `main` is protected: no direct pushes. Merge only from `develop` via release PR.
 - `develop` is protected: requires 1 approving reviewer and all CI checks passing before merge.
 - Feature branches are created from `develop` and merged back to `develop` via Pull Request.
@@ -333,6 +338,7 @@ SAT-MSS uses **Conventional Commits** specification.
 **Scopes:** `auth`, `aoi`, `imagery`, `analysis`, `alerts`, `cases`, `reports`, `admin`, `gse`, `cesium`, `db`, `infra`, `types`
 
 **Examples:**
+
 ```
 feat(aoi): add polygon vertex undo functionality in drawing mode
 
@@ -346,8 +352,9 @@ BREAKING CHANGE: severity_score column renamed to severity_score_normalized
 ```
 
 **Rules:**
+
 - Subject line: imperative mood, lowercase, no period, max 72 characters.
-- Body: wrap at 72 characters. Explain the *why*, not the *what*.
+- Body: wrap at 72 characters. Explain the _why_, not the _what_.
 - Reference GitHub issues: `Closes #47`, `Fixes #112`.
 
 ### 3.6 Environment Management
@@ -355,6 +362,7 @@ BREAKING CHANGE: severity_score column renamed to severity_score_normalized
 Environment variables are managed per-environment. Never commit values.
 
 **Files:**
+
 - `.env.example` — all variable names with descriptions, no values (committed)
 - `.env.local` — developer local values (gitignored)
 - `.env.test` — test environment values (gitignored)
@@ -595,17 +603,17 @@ ingestion_log   [APPEND-ONLY]
 
 ### 4.3 PostGIS Spatial Functions in Use
 
-| Operation | PostGIS Function | Usage |
-|---|---|---|
-| Concession intersection check | `ST_Intersects(geom_a, geom_b)` | FR-010: classify change zones |
-| Distance to protected area | `ST_Distance(geom_a::geography, geom_b::geography)` | FR-011 severity factor (c) |
-| Distance to water body | `ST_Distance(geom_a::geography, geom_b::geography)` | FR-011 severity factor (d) |
-| Change zone area | `ST_Area(geom::geography)` | FR-008: area in m² |
-| Zone centroid | `ST_Centroid(geom)` | Alert coordinate generation |
-| AOI boundary check | `ST_Within(geom_a, geom_b)` | Full containment within concession |
-| Deduplication overlap | `ST_Intersects + ST_Area(ST_Intersection(...))` | FR-017: overlap ratio |
-| Spatial index query | `WHERE geom && ST_MakeEnvelope(...)` | All spatial filter queries |
-| Buffer for proximity | `ST_Buffer(geom::geography, distance_m)` | Protected area adjacency check |
+| Operation                     | PostGIS Function                                    | Usage                              |
+| ----------------------------- | --------------------------------------------------- | ---------------------------------- |
+| Concession intersection check | `ST_Intersects(geom_a, geom_b)`                     | FR-010: classify change zones      |
+| Distance to protected area    | `ST_Distance(geom_a::geography, geom_b::geography)` | FR-011 severity factor (c)         |
+| Distance to water body        | `ST_Distance(geom_a::geography, geom_b::geography)` | FR-011 severity factor (d)         |
+| Change zone area              | `ST_Area(geom::geography)`                          | FR-008: area in m²                 |
+| Zone centroid                 | `ST_Centroid(geom)`                                 | Alert coordinate generation        |
+| AOI boundary check            | `ST_Within(geom_a, geom_b)`                         | Full containment within concession |
+| Deduplication overlap         | `ST_Intersects + ST_Area(ST_Intersection(...))`     | FR-017: overlap ratio              |
+| Spatial index query           | `WHERE geom && ST_MakeEnvelope(...)`                | All spatial filter queries         |
+| Buffer for proximity          | `ST_Buffer(geom::geography, distance_m)`            | Protected area adjacency check     |
 
 ### 4.4 Indexing Strategy
 
@@ -646,17 +654,19 @@ Migrations are numbered sequentially: `0001_initial_schema.sql`, `0002_add_sever
 All endpoints are prefixed with `/api/v1`. All responses are JSON. All authenticated endpoints require `Authorization: Bearer <jwt_token>` header. All datetime values are ISO 8601 UTC strings.
 
 **Standard Error Response Shape:**
+
 ```json
 {
   "error": {
     "code": "VALIDATION_ERROR",
     "message": "Human-readable description",
-    "details": [ { "field": "name", "message": "Required" } ]
+    "details": [{ "field": "name", "message": "Required" }]
   }
 }
 ```
 
 **Standard Pagination Shape (for list endpoints):**
+
 ```json
 {
   "data": [...],
@@ -674,6 +684,7 @@ All endpoints are prefixed with `/api/v1`. All responses are JSON. All authentic
 ### 5.1 Authentication Domain
 
 **POST /api/v1/auth/login**
+
 - Purpose: Authenticate a user and return a JWT.
 - Request: `{ "email": string, "password": string }`
 - Response: `{ "token": string, "user": { "id", "email", "role", "name", "organization" } }`
@@ -681,17 +692,20 @@ All endpoints are prefixed with `/api/v1`. All responses are JSON. All authentic
 - Errors: `401 INVALID_CREDENTIALS`, `429 RATE_LIMITED` (max 10 attempts/15 min per IP)
 
 **POST /api/v1/auth/logout**
+
 - Purpose: Invalidate the current session token.
 - Request: (none; token in Authorization header)
 - Response: `{ "success": true }`
 - Errors: `401 UNAUTHORIZED`
 
 **GET /api/v1/auth/me**
+
 - Purpose: Return authenticated user profile.
 - Response: `{ "id", "email", "role", "name", "organization", "notificationThreshold", "lastLoginAt" }`
 - Errors: `401 UNAUTHORIZED`
 
 **PATCH /api/v1/auth/me**
+
 - Purpose: Update notification threshold preference.
 - Request: `{ "notificationThreshold": number (1–100) }`
 - Response: Updated user object.
@@ -702,15 +716,18 @@ All endpoints are prefixed with `/api/v1`. All responses are JSON. All authentic
 ### 5.2 AOI Domain
 
 **GET /api/v1/aois**
+
 - Purpose: List all AOIs (filtered by role scope).
 - Query params: `?stateCode=OD&districtName=Sundargarh&isActive=true&page=1&pageSize=20`
 - Response: Paginated list of AOI objects including GeoJSON geometry.
 - Auth: All roles.
 
 **POST /api/v1/aois**
+
 - Purpose: Create a new AOI.
 - Auth: System Administrator only.
 - Request:
+
 ```json
 {
   "name": "Sundargarh Forest Zone North",
@@ -720,21 +737,25 @@ All endpoints are prefixed with `/api/v1`. All responses are JSON. All authentic
   "priority": "HIGH"
 }
 ```
+
 - Response: Created AOI object with `id`.
 - Validation: `geometry` must be a valid GeoJSON Polygon in WGS84; `name` required (max 100 chars); `priority` must be `HIGH | MEDIUM | LOW`; polygon must have minimum 3 vertices.
 - Errors: `400 VALIDATION_ERROR`, `403 FORBIDDEN`, `409 DUPLICATE_AOI_NAME`
 
 **GET /api/v1/aois/:id**
+
 - Purpose: Get single AOI with full metadata.
 - Response: Full AOI object including geometry, statistics (alert count, last analysis date, imagery count).
 
 **PATCH /api/v1/aois/:id**
+
 - Purpose: Update AOI name, priority, or active status.
 - Auth: System Administrator only.
 - Request: Partial update of `name`, `priority`, `isActive`.
 - Errors: `404 NOT_FOUND`, `403 FORBIDDEN`
 
 **DELETE /api/v1/aois/:id**
+
 - Purpose: Soft-delete (deactivate) an AOI. Never hard-deletes.
 - Auth: System Administrator only.
 - Response: `{ "success": true }`
@@ -745,18 +766,21 @@ All endpoints are prefixed with `/api/v1`. All responses are JSON. All authentic
 ### 5.3 Imagery Domain
 
 **GET /api/v1/aois/:aoiId/scenes**
+
 - Purpose: List all imagery scenes for an AOI, optionally filtered by date range and cloud cover.
 - Query params: `?from=2024-01-01&to=2025-12-31&maxCloudCover=30&satellite=SENTINEL2`
 - Response: Paginated list of scene objects: `{ id, satelliteSource, tileId, acquisitionDate, cloudCoverPct, processingLevel, storagePath, footprint }`
 - Auth: Analyst, Director.
 
 **POST /api/v1/aois/:aoiId/scenes/trigger-sync**
+
 - Purpose: Manually trigger an imagery sync for an AOI from Copernicus Hub.
 - Auth: System Administrator only.
 - Response: `{ "jobId": string, "status": "QUEUED" }`
 - Errors: `429 SYNC_ALREADY_IN_PROGRESS`
 
 **GET /api/v1/scenes/:id/tile-url**
+
 - Purpose: Return a signed temporary URL for accessing the raw imagery tile in object storage.
 - Auth: Analyst, Director.
 - Response: `{ "url": string, "expiresAt": string }`
@@ -766,11 +790,13 @@ All endpoints are prefixed with `/api/v1`. All responses are JSON. All authentic
 ### 5.4 Boundary Domain
 
 **GET /api/v1/boundaries/datasets**
+
 - Purpose: List all boundary datasets with staleness status.
 - Auth: All authenticated.
 - Response: List of `{ id, name, type, stateCode, validityDate, isActive, isStale, importedAt, importedBy }`
 
 **POST /api/v1/boundaries/datasets**
+
 - Purpose: Import a new boundary dataset.
 - Auth: System Administrator only.
 - Request: `multipart/form-data` with fields: `name`, `type` (CONCESSION | PROTECTED_AREA), `stateCode`, `validityDate`, and file upload (GeoJSON, KML, or Shapefile zip).
@@ -779,16 +805,19 @@ All endpoints are prefixed with `/api/v1`. All responses are JSON. All authentic
 - Errors: `400 INVALID_FILE_FORMAT`, `400 VALIDATION_ERROR`
 
 **GET /api/v1/boundaries/datasets/:id/diff**
+
 - Purpose: Return a diff comparison between a new (pending) dataset and the currently active one.
 - Auth: System Administrator only.
 - Response: `{ "added": [polygons], "removed": [polygons], "modified": [polygons], "unchanged": number }`
 
 **POST /api/v1/boundaries/datasets/:id/activate**
+
 - Purpose: Activate a pending dataset, superseding the current active one.
 - Auth: System Administrator only.
 - Response: Updated dataset object.
 
 **GET /api/v1/boundaries/polygons**
+
 - Purpose: Return boundary polygons intersecting a bounding box (for map rendering).
 - Query params: `?bbox=minLon,minLat,maxLon,maxLat&type=CONCESSION&stateCode=OD`
 - Response: GeoJSON FeatureCollection of polygons within the bbox.
@@ -799,9 +828,11 @@ All endpoints are prefixed with `/api/v1`. All responses are JSON. All authentic
 ### 5.5 Analysis Domain
 
 **POST /api/v1/aois/:aoiId/analyses**
+
 - Purpose: Dispatch a new change detection analysis run.
 - Auth: Analyst, System Administrator.
 - Request:
+
 ```json
 {
   "baselineSceneId": "uuid",
@@ -809,13 +840,16 @@ All endpoints are prefixed with `/api/v1`. All responses are JSON. All authentic
   "sensitivityLevel": "STANDARD | HIGH"
 }
 ```
+
 - Response: `{ "runId": string, "status": "QUEUED", "estimatedDurationSeconds": number }`
 - Validation: Both scene IDs must belong to the specified AOI; scenes must not be the same; target must be chronologically after baseline.
 - Errors: `400 VALIDATION_ERROR`, `409 ANALYSIS_ALREADY_RUNNING`
 
 **GET /api/v1/analyses/:runId**
+
 - Purpose: Poll analysis run status and retrieve results when complete.
 - Response:
+
 ```json
 {
   "id": "uuid",
@@ -829,11 +863,13 @@ All endpoints are prefixed with `/api/v1`. All responses are JSON. All authentic
 ```
 
 **GET /api/v1/aois/:aoiId/analyses**
+
 - Purpose: List all analysis runs for an AOI.
 - Response: Paginated list of run summaries.
 - Auth: Analyst, Director.
 
 **PATCH /api/v1/analyses/:runId/zones/:zoneId**
+
 - Purpose: Flag a zone as evidence or dismiss it as false positive.
 - Auth: Analyst.
 - Request: `{ "action": "FLAG | DISMISS", "dismissalReason": string (required if DISMISS, min 20 chars) }`
@@ -845,16 +881,19 @@ All endpoints are prefixed with `/api/v1`. All responses are JSON. All authentic
 ### 5.6 Alert Domain
 
 **GET /api/v1/alerts**
+
 - Purpose: List alerts for the triage queue.
 - Query params: `?status=PENDING_REVIEW&severityMin=70&intersectionCategory=PROTECTED_AREA_INCURSION&aoiId=uuid&from=2025-01-01&page=1&pageSize=20&sortBy=severity_score&sortDir=desc`
 - Response: Paginated alert list with full metadata.
 - Auth: All roles (field ranger sees only alerts assigned to their state).
 
 **GET /api/v1/alerts/:id**
+
 - Purpose: Get full alert detail including all change zones and status history.
 - Response: Alert object with nested `changeZones`, `statusLog`, `aoi`, `analysisRun`.
 
 **PATCH /api/v1/alerts/:id/status**
+
 - Purpose: Update alert status (triage action).
 - Auth: Analyst, System Administrator.
 - Request: `{ "status": "UNDER_REVIEW | CONFIRMED_ILLEGAL | CONFIRMED_LEGAL | FALSE_POSITIVE_NATURAL | FALSE_POSITIVE_DATA_ERROR | ESCALATED_TO_ENFORCEMENT", "justificationNote": string (min 50 chars) }`
@@ -863,6 +902,7 @@ All endpoints are prefixed with `/api/v1`. All responses are JSON. All authentic
 - Errors: `400 INVALID_STATUS_TRANSITION`, `400 JUSTIFICATION_TOO_SHORT`
 
 **POST /api/v1/alerts/:id/merge**
+
 - Purpose: Confirm deduplication merge of an alert into a parent alert.
 - Auth: Analyst.
 - Request: `{ "parentAlertId": "uuid" }`
@@ -870,6 +910,7 @@ All endpoints are prefixed with `/api/v1`. All responses are JSON. All authentic
 - Errors: `404 NOT_FOUND`, `409 CANNOT_MERGE_INTO_SELF`
 
 **GET /api/v1/alerts/:id/timeline**
+
 - Purpose: Return all detection events at the same geographic location across all analyses.
 - Response: Array of `{ runId, acquisitionDate, changeArea, severityScore }` ordered chronologically.
 
@@ -878,6 +919,7 @@ All endpoints are prefixed with `/api/v1`. All responses are JSON. All authentic
 ### 5.7 Case File Domain
 
 **POST /api/v1/case-files**
+
 - Purpose: Create a new (draft) case file linked to an alert.
 - Auth: Analyst.
 - Request: `{ "alertId": "uuid" }`
@@ -886,22 +928,26 @@ All endpoints are prefixed with `/api/v1`. All responses are JSON. All authentic
 - Errors: `400 INVALID_ALERT_STATUS`, `409 CASE_FILE_ALREADY_EXISTS`
 
 **GET /api/v1/case-files**
+
 - Purpose: List case files.
 - Query params: `?status=DRAFT&analystId=uuid&page=1&pageSize=20`
 - Auth: Analyst (own files + shared), Director (all).
 
 **GET /api/v1/case-files/:id**
+
 - Purpose: Get full case file with all sections, evidence images, and audit trail.
 - Auth: Analyst, Director.
 - Side effect: Records a `VIEW` entry in `case_file_audit`.
 
 **PATCH /api/v1/case-files/:id**
+
 - Purpose: Update case file draft (analyst notes, recommendation, evidence selection).
 - Auth: Analyst (must be compiler of the case file).
 - Request: Partial update of `analystNotes`, `recommendation`, `recommendationDetail`, `evidenceImageIds` (ordered array of scene IDs).
 - Validation: `analystNotes` minimum 100 characters if provided; `evidenceImageIds` must include at minimum 2 entries.
 
 **POST /api/v1/case-files/:id/export**
+
 - Purpose: Initiate PDF and/or GeoJSON export.
 - Auth: Analyst.
 - Request: `{ "formats": ["PDF", "GEOJSON"] }`
@@ -909,10 +955,12 @@ All endpoints are prefixed with `/api/v1`. All responses are JSON. All authentic
 - Errors: `400 MISSING_REQUIRED_FIELDS` (if case file is incomplete)
 
 **GET /api/v1/case-files/:id/export/:jobId**
+
 - Purpose: Poll export job status and get download URL when ready.
 - Response: `{ "status": "QUEUED | GENERATING | READY | FAILED", "pdfUrl": string|null, "geojsonUrl": string|null }`
 
 **GET /api/v1/case-files/:id/audit**
+
 - Purpose: Return the full immutable audit trail for a case file.
 - Auth: Analyst, Director, System Administrator.
 - Response: Chronological array of audit entries.
@@ -922,10 +970,12 @@ All endpoints are prefixed with `/api/v1`. All responses are JSON. All authentic
 ### 5.8 Dashboard Domain
 
 **GET /api/v1/dashboard/summary**
+
 - Purpose: Aggregate metrics for the Operational Dashboard.
 - Auth: Director, System Administrator.
 - Query params: `?from=2025-01-01&to=2025-12-31&stateCode=OD&intersectionCategory=PROTECTED_AREA_INCURSION`
 - Response:
+
 ```json
 {
   "totalActiveAlerts": 47,
@@ -939,6 +989,7 @@ All endpoints are prefixed with `/api/v1`. All responses are JSON. All authentic
 ```
 
 **GET /api/v1/dashboard/aoi-heatmap**
+
 - Purpose: Return alert intensity data per AOI for heat map rendering.
 - Auth: Director, System Administrator.
 - Response: Array of `{ aoiId, centroid, alertCount, highestSeverityScore, totalChangeHa }`
@@ -948,28 +999,33 @@ All endpoints are prefixed with `/api/v1`. All responses are JSON. All authentic
 ### 5.9 Admin Domain
 
 **GET /api/v1/admin/users**
+
 - Purpose: List all users.
 - Auth: System Administrator only.
 - Response: Paginated user list (no password hashes).
 
 **POST /api/v1/admin/users**
+
 - Purpose: Create a new user and send invitation email.
 - Auth: System Administrator only.
 - Request: `{ "email": string, "name": string, "organization": string, "role": "FIELD_RANGER | ANALYST | DIRECTOR | ADMIN" }`
 - Errors: `409 EMAIL_ALREADY_EXISTS`, `400 VALIDATION_ERROR`
 
 **PATCH /api/v1/admin/users/:id**
+
 - Purpose: Update user role or deactivate user.
 - Auth: System Administrator only.
 - Request: `{ "role": string?, "isActive": boolean? }`
 - Errors: `400 CANNOT_DEACTIVATE_SELF`
 
 **GET /api/v1/admin/severity-config**
+
 - Purpose: Get current severity scoring factor weights.
 - Auth: System Administrator only.
 - Response: Array of `{ factorName, weightPct, updatedAt, updatedBy }`
 
 **PUT /api/v1/admin/severity-config**
+
 - Purpose: Update severity score factor weights.
 - Auth: System Administrator only.
 - Request: Array of `{ factorName, weightPct }` — must sum to 100.
@@ -981,15 +1037,18 @@ All endpoints are prefixed with `/api/v1`. All responses are JSON. All authentic
 ### 5.10 Notification Domain
 
 **GET /api/v1/notifications**
+
 - Purpose: Get unread in-platform notifications for the authenticated user.
 - Query params: `?isRead=false&page=1&pageSize=20`
 - Response: Paginated notification list.
 
 **PATCH /api/v1/notifications/:id/read**
+
 - Purpose: Mark a notification as read.
 - Response: `{ "success": true }`
 
 **PATCH /api/v1/notifications/read-all**
+
 - Purpose: Mark all notifications for the user as read.
 - Response: `{ "count": number }`
 
@@ -1001,14 +1060,14 @@ The WebSocket connection is established at `wss://{host}/ws` with the JWT in the
 
 **Server → Client events:**
 
-| Event Name | Payload | Description |
-|---|---|---|
-| `analysis:progress` | `{ runId, progressPct, currentPhase }` | Analysis job progress updates |
-| `analysis:complete` | `{ runId, alertId, zoneCount, severityScore }` | Analysis finished, alert generated |
-| `analysis:failed` | `{ runId, errorMessage }` | Analysis job failed |
-| `alert:new` | `{ alertId, aoiId, severityScore, intersectionCategory }` | New alert generated |
-| `notification:new` | `{ notificationId, title, body }` | New in-platform notification |
-| `export:ready` | `{ jobId, caseFileId, pdfUrl, geojsonUrl }` | Export job completed |
+| Event Name          | Payload                                                   | Description                        |
+| ------------------- | --------------------------------------------------------- | ---------------------------------- |
+| `analysis:progress` | `{ runId, progressPct, currentPhase }`                    | Analysis job progress updates      |
+| `analysis:complete` | `{ runId, alertId, zoneCount, severityScore }`            | Analysis finished, alert generated |
+| `analysis:failed`   | `{ runId, errorMessage }`                                 | Analysis job failed                |
+| `alert:new`         | `{ alertId, aoiId, severityScore, intersectionCategory }` | New alert generated                |
+| `notification:new`  | `{ notificationId, title, body }`                         | New in-platform notification       |
+| `export:ready`      | `{ jobId, caseFileId, pdfUrl, geojsonUrl }`               | Export job completed               |
 
 ---
 
@@ -1144,16 +1203,16 @@ apps/web/
 
 SAT-MSS uses **Zustand** for client-side global state and **TanStack Query** for server-synchronized state. The division is strict:
 
-| Concern | Tool | Rationale |
-|---|---|---|
-| Camera position, zoom level, active spatial level | Zustand (`useGlobeStore`) | Pure UI state — not server data |
-| AOI drawing mode, current vertices | Zustand (`useAoiStore`) | Ephemeral UI state |
-| Analysis progress, current phase | Zustand (`useAnalysisStore`) | Populated by WebSocket events |
-| Timeline scrubber position, compare mode | Zustand (`useTimelineStore`) | Pure UI state |
-| Alert list, filters, selection | TanStack Query | Paginated server data |
-| AOI list | TanStack Query | Server data with background refetch |
-| Case file | TanStack Query | Server data, invalidated on mutation |
-| Dashboard metrics | TanStack Query | Server data with 5-min stale time |
+| Concern                                           | Tool                         | Rationale                            |
+| ------------------------------------------------- | ---------------------------- | ------------------------------------ |
+| Camera position, zoom level, active spatial level | Zustand (`useGlobeStore`)    | Pure UI state — not server data      |
+| AOI drawing mode, current vertices                | Zustand (`useAoiStore`)      | Ephemeral UI state                   |
+| Analysis progress, current phase                  | Zustand (`useAnalysisStore`) | Populated by WebSocket events        |
+| Timeline scrubber position, compare mode          | Zustand (`useTimelineStore`) | Pure UI state                        |
+| Alert list, filters, selection                    | TanStack Query               | Paginated server data                |
+| AOI list                                          | TanStack Query               | Server data with background refetch  |
+| Case file                                         | TanStack Query               | Server data, invalidated on mutation |
+| Dashboard metrics                                 | TanStack Query               | Server data with 5-min stale time    |
 
 ### 6.3 Routing
 
@@ -1166,6 +1225,7 @@ Route protection is role-based: the `AuthGuard` component checks the user's role
 CesiumJS is integrated via the **Resium** library. The root `GlobeViewer` component initializes the Cesium Viewer instance and provides it via React Context to all child components.
 
 **Critical integration notes:**
+
 - The Cesium `Viewer` is initialized once and never remounted. React re-renders update Cesium entities declaratively via Resium props.
 - The `CameraController` component listens to `useGlobeStore` and translates state changes into Cesium camera `flyTo` calls with the choreographed easing curves from PXD §6.
 - `ImageryLayer` uses a Cesium `UrlTemplateImageryProvider` pointed at the signed tile URLs from the imagery API.
@@ -1346,6 +1406,7 @@ Response (standardized shape)
 Four Bull queues handle all asynchronous workloads:
 
 **Queue 1: `analysis-jobs`**
+
 - Priority queue (HIGH/MEDIUM/LOW per AOI priority).
 - Job: `{ aoiId, runId, baselineSceneId, targetSceneId, sensitivityLevel }`
 - Worker: calls GSE `/internal/analyse` endpoint, streams progress updates via Socket.IO to connected clients.
@@ -1353,16 +1414,19 @@ Four Bull queues handle all asynchronous workloads:
 - Retry: up to 2 retries. On final failure: marks `analysis_runs.status = FAILED`, notifies analyst.
 
 **Queue 2: `pdf-export-jobs`**
+
 - Job: `{ caseFileId, userId }`
 - Worker: renders the PDF report template in headless Puppeteer, uploads to object storage, writes `case_files.pdf_storage_path`, emits `export:ready` WebSocket event.
 - Timeout: 120 seconds per job.
 
 **Queue 3: `email-notification-jobs`**
+
 - Job: `{ userId, templateName, templateData }`
 - Worker: Nodemailer sends via configured SMTP.
 - Retry: up to 3 retries with exponential backoff.
 
 **Queue 4: `imagery-sync-jobs`**
+
 - Scheduled via Bull cron: runs every 12 hours.
 - For each active AOI: queries Copernicus Hub for new scenes within the AOI footprint and cloud cover tolerance, downloads metadata, triggers imagery download to object storage.
 - Large scenes (Sentinel-2 full tile at 110MB) are downloaded in streaming fashion to object storage without loading fully into memory.
@@ -1595,6 +1659,7 @@ GSE pipeline.py begins execution:
 The SAT-MSS MVP uses **classical remote sensing signal processing** (NDVI thresholding, morphological filtering, SWIR band ratios) for change detection — not trained machine learning models. This is a deliberate decision:
 
 **Rationale:**
+
 - Classical methods are fully explainable and auditable — a forensic evidence system cannot use a black-box model without explainability.
 - NDVI-based change detection on Sentinel-2 imagery is a well-validated, peer-reviewed methodology used by organizations including FAO, ISRO, and Global Forest Watch.
 - Training data for illegal mining detection in India is sparse and unverified. A poorly trained model introduces systematic false positives that would undermine the legal credibility of case files.
@@ -1660,6 +1725,7 @@ DetectionStrategy (abstract base class)
 The `pipeline.py` instantiates the strategy based on a configuration flag (`DETECTION_STRATEGY=classical | ml`). The strategy flag is currently hard-coded to `classical` in the V1 environment configuration.
 
 This pattern (Strategy design pattern) ensures:
+
 - The pipeline orchestration code does not change when the strategy changes.
 - V2 machine learning integration only requires implementing `MLStrategy` and updating the config flag.
 
@@ -1670,6 +1736,7 @@ When V2 introduces a trained ML model:
 **Candidate model type:** A pixel-level binary semantic segmentation model (e.g., U-Net architecture) trained on Sentinel-2 imagery patches labeled as mining/non-mining.
 
 **Training data sources (to be acquired for V2):**
+
 - ISRO's historical illegal mining incident database (ground truth labels).
 - Existing confirmed alert polygons from SAT-MSS V1 (generated ground truth from operational use).
 - Global Surface Mining dataset (globally labeled open pit mines — approximate transfer learning base).
@@ -1687,6 +1754,7 @@ When V2 introduces a trained ML model:
 8 sprints × 2 weeks each = 16 weeks total (MVP delivery).
 
 Team composition assumed:
+
 - 2 Frontend Engineers (FE1, FE2)
 - 2 Backend Engineers (BE1, BE2)
 - 1 Geospatial / Remote Sensing Engineer (GS1)
@@ -1700,6 +1768,7 @@ Team composition assumed:
 **Goal:** Every engineer has a working local environment. Infrastructure, database schema, and authentication are complete. The team can merge PRs against a working CI pipeline.
 
 **Tasks:**
+
 - [DO1] Docker Compose environment: PostgreSQL + PostGIS, Redis, MinIO, Nginx.
 - [DO1] GitHub Actions CI pipeline: lint, typecheck, test, build for all workspaces.
 - [DO1] `.env.example` with all required variables documented.
@@ -1714,6 +1783,7 @@ Team composition assumed:
 - [FE2] Login page UI (Orbital Glass design system foundation: colors, fonts, glass card component).
 
 **Deliverables:**
+
 - Working local dev environment reproducible from `scripts/setup.sh`.
 - All database tables created and migrated.
 - JWT authentication working end-to-end.
@@ -1729,6 +1799,7 @@ Team composition assumed:
 **Goal:** The Cesium globe renders. The camera transitions through the full spatial hierarchy (Globe → India → State → District). The Mission Control shell layout is complete.
 
 **Tasks:**
+
 - [FE1] CesiumJS integration: `GlobeViewer`, `TerrainProvider`, `CameraController`.
 - [FE1] India administrative boundaries rendered (state and district GeoJSON from Survey of India public dataset — seeded via `scripts/seed-india-boundaries.sh`).
 - [FE1] Camera transition animations (Orbital Descent, Lateral Glide, Retraction) implementing PXD §6 easing curves.
@@ -1741,6 +1812,7 @@ Team composition assumed:
 - [GS1] Cesium terrain provider configuration (Cesium World Terrain or equivalent open DEM source).
 
 **Deliverables:**
+
 - Mission Control home screen (SCR-02) functional.
 - Splash screen (SCR-01) functional.
 - State and district selection with camera transitions (SCR-03, SCR-04, SCR-05).
@@ -1756,6 +1828,7 @@ Team composition assumed:
 **Goal:** Analysts can browse existing AOIs on the globe and create new AOIs using the polygon drawing tool. AOI data persists to the database.
 
 **Tasks:**
+
 - [BE1] AOI module: all CRUD endpoints (`GET /aois`, `POST /aois`, `PATCH /aois/:id`, `DELETE /aois/:id`).
 - [BE1] AOI polygon stored as PostGIS geometry. Spatial validation in service layer.
 - [FE1] `AoiLayer` component: renders existing AOI polygons on Cesium terrain (green/amber/red by status).
@@ -1769,6 +1842,7 @@ Team composition assumed:
 - [GS1] Area calculation utility using Shapely for precise ha computation (PostGIS `ST_Area` for DB, Shapely for live client-side preview).
 
 **Deliverables:**
+
 - AOI layer rendered on globe.
 - New AOI drawing workflow end-to-end (SCR-06).
 - AOI list in left panel updates in real time.
@@ -1784,6 +1858,7 @@ Team composition assumed:
 **Goal:** Satellite imagery is ingested from Copernicus Hub. Scenes are displayed on the globe within AOI boundaries. Concession and protected area boundaries are importable and rendered.
 
 **Tasks:**
+
 - [GS1] `copernicus_client.py`: sentinelsat integration for Sentinel-2 and Sentinel-1 search.
 - [GS1] `scene_downloader.py`: streaming download of .SAFE packages to MinIO.
 - [GS1] `metadata_extractor.py`: cloud cover, footprint, band extraction from scene metadata.
@@ -1801,6 +1876,7 @@ Team composition assumed:
 - [BE2] Boundary staleness check: scheduled daily job flags datasets > 180 days old.
 
 **Deliverables:**
+
 - Imagery ingestion pipeline end-to-end (Copernicus → MinIO → DB).
 - Scene rendered on globe within AOI boundary (SCR-07).
 - Concession and protected area boundaries rendered on globe.
@@ -1817,6 +1893,7 @@ Team composition assumed:
 **Goal:** The full change detection analysis pipeline runs end-to-end. Results are displayed as detection overlays on the Cesium terrain.
 
 **Tasks:**
+
 - [GS1] `preprocessor.py`: radiometric normalization, cloud masking via SCL band.
 - [GS1] `ndvi_calculator.py`: NDVI computation from Band 4 and Band 8 arrays.
 - [GS1] `change_detector.py`: delta NDVI, threshold masking, morphological filter, SWIR check.
@@ -1836,6 +1913,7 @@ Team composition assumed:
 - [FE2] `useAnalysisProgress` hook: WebSocket subscription for progress updates.
 
 **Deliverables:**
+
 - Full analysis pipeline (SCR-08) end-to-end.
 - Detection results displayed on globe (SCR-09).
 - Alert generated and visible in Right Panel.
@@ -1851,6 +1929,7 @@ Team composition assumed:
 **Goal:** The timeline comparison panel is interactive. Alert triage workflow is complete. Alert status management with audit trail is functional.
 
 **Tasks:**
+
 - [FE1] `TimelinePanel`: temporal strip, scene ticks, baseline/target draggable markers, change area sparkline.
 - [FE1] Compare mode: split terrain view with draggable divider.
 - [FE1] Timeline animation playback (▶ PLAY).
@@ -1867,6 +1946,7 @@ Team composition assumed:
 - [GS1] Alert deduplication: overlap ratio calculation using ST_Area(ST_Intersection).
 
 **Deliverables:**
+
 - Timeline comparison panel (SCR-10) fully functional.
 - Alert Queue (SCR-13) functional with all filters.
 - Alert status management with audit trail end-to-end.
@@ -1882,6 +1962,7 @@ Team composition assumed:
 **Goal:** Analysts can compile and export Case Files as PDF and GeoJSON. The Operational Dashboard is functional. Email notifications are working.
 
 **Tasks:**
+
 - [BE1] Case file module: create, update, export endpoints.
 - [BE1] PDF generation worker (Puppeteer): HTML template → PDF → MinIO → signed URL.
 - [BE1] GeoJSON export: compile all zone geometries + metadata into GeoJSON FeatureCollection.
@@ -1899,6 +1980,7 @@ Team composition assumed:
 - [DO1] Imagery sync Celery cron schedule: every 12 hours.
 
 **Deliverables:**
+
 - Report Assembly and PDF export end-to-end (SCR-11).
 - GeoJSON export working.
 - Case File Archive (SCR-14) functional.
@@ -1915,6 +1997,7 @@ Team composition assumed:
 **Goal:** The application is production-ready. Performance targets from NFR-001 through NFR-012 are verified. Security is hardened. The deployment pipeline is complete.
 
 **Tasks:**
+
 - [TL] End-to-end integration testing across the full analyst journey (SCR-01 through SCR-12).
 - [TL] RBAC audit: verify all 4 roles have correct access boundaries across all 40 endpoints.
 - [DO1] Production Docker Compose configuration (`docker-compose.prod.yml`).
@@ -1935,6 +2018,7 @@ Team composition assumed:
 - [TL] User onboarding tutorial content and Learnability test (NFR-012) with 5 representative users.
 
 **Deliverables:**
+
 - All 20 V1 screens functional and tested.
 - NFR-001 (72h MTTD) verified via load test.
 - NFR-006 (99.5% availability) SLA configured.
@@ -1955,6 +2039,7 @@ Team composition assumed:
 **Definition:** The system runs locally. Core infrastructure is proven. An analyst can log in, navigate the globe, register an AOI, ingest imagery from Copernicus Hub, and view satellite imagery draped on terrain.
 
 **Ready when:**
+
 - [ ] All database tables created and seeded.
 - [ ] Authentication (login/logout/RBAC) working.
 - [ ] Globe renders with India state/district hierarchy and camera transitions.
@@ -1971,6 +2056,7 @@ Team composition assumed:
 **Definition:** The core analyst workflow is end-to-end. An analyst can complete the full journey from Mission Control to viewing analysis results and managing alert triage.
 
 **Ready when:**
+
 - [ ] Change detection analysis pipeline runs on real Sentinel-2 scenes.
 - [ ] Detection zones render on Cesium terrain as correctly colored overlays.
 - [ ] Severity score calculated and displayed with correct BR-010 floor.
@@ -1989,6 +2075,7 @@ Team composition assumed:
 **Definition:** All V1 features are complete and functional. The system is feature-complete for the MVP scope.
 
 **Ready when:**
+
 - [ ] Case File compilation and PDF export working.
 - [ ] GeoJSON export working.
 - [ ] Operational Dashboard populated with real data.
@@ -2005,6 +2092,7 @@ Team composition assumed:
 **Definition:** The system is production-deployed, security-hardened, performance-verified, and accessible to all designated users.
 
 **Ready when:**
+
 - [ ] All NFR acceptance criteria pass (NFR-001 through NFR-012).
 - [ ] All SRS acceptance criteria pass (AC-001 through AC-018).
 - [ ] Security audit passed (RBAC, JWT, encryption at rest and in transit).
@@ -2084,20 +2172,20 @@ ORDER  ITEM                                           TEAM     DEPENDENCY
 
 ### Risk Matrix
 
-| ID | Risk | Probability | Impact | Mitigation Strategy |
-|---|---|---|---|---|
-| **TR-01** | Copernicus Open Access Hub API rate limits or downtime | HIGH | HIGH | Implement exponential backoff + retry in `copernicus_client.py`. Cache the latest available scene list locally. For prolonged outages, surface a clear `DATA_FEED_OFFLINE` indicator per PXD §25. Maintain 24-month historical baseline so analysis can proceed on cached data. |
-| **TR-02** | Cesium terrain rendering performance on lower-end government hardware | MEDIUM | HIGH | Test on minimum spec hardware (Intel integrated graphics, 8GB RAM) in Sprint 2. If performance is inadequate, implement `useLowPerformanceMode()` hook that reduces terrain detail level and disables atmosphere rendering. |
-| **TR-03** | Cloud cover during Indian monsoon season (June–September) renders optical imagery unusable | HIGH | MEDIUM | Sentinel-1 SAR imagery is cloud-penetrating. Ensure Sentinel-1 ingestion is complete by Sprint 4. The GSE pipeline must fall back to SAR-based change detection (different thresholds; requires research in Sprint 5). |
-| **TR-04** | PostGIS spatial query performance degrading at scale (>50 AOIs, >10,000 zones) | LOW | HIGH | All geometry columns indexed with GiST. All intersection queries filter by AOI bounding box first (`&&` operator hits GiST index before `ST_Intersects`). Validate with 50-AOI load test in Sprint 8. |
-| **TR-05** | PDF generation (Puppeteer) fails on evidence images loaded from object storage | MEDIUM | MEDIUM | In Sprint 7: implement pre-fetch of all evidence images as base64 before Puppeteer renders. Set a 120-second job timeout. Implement retry logic. Test with cases having 6 evidence images. |
-| **TR-06** | India state/district administrative boundary data licensing restricts use | MEDIUM | HIGH | Verify licensing of Survey of India boundary data before Sprint 2. Alternative: use GADM (Global Administrative Areas) dataset which is freely licensed for non-commercial use. |
-| **TR-07** | Alert deduplication false merges (two separate nearby mining sites merged) | MEDIUM | MEDIUM | The deduplication overlap threshold (60%) is configurable as a system setting. Include a mandatory analyst confirmation step — automatic merges are never performed (BR-006). Tune threshold based on Beta testing feedback in Sprint 6. |
-| **TR-08** | JWTs with 8-hour expiry cause session loss mid-analysis for long-running analysis sessions | LOW | MEDIUM | Implement silent refresh: frontend detects token expiry approaching (15 minutes remaining) and automatically refreshes via a `/auth/refresh` endpoint using a long-lived refresh token stored in an httpOnly cookie. |
-| **TR-09** | Python GDAL/Rasterio dependency version conflicts in Docker container | MEDIUM | LOW | Pin all Python dependency versions in `requirements.txt`. Use the official `osgeo/gdal` Docker base image, which provides a pre-compiled GDAL environment. Test the Docker build in Sprint 1 before any pipeline code is written. |
-| **TR-10** | Sentinel-2 scene file sizes (110–800MB per tile) create processing memory pressure | MEDIUM | HIGH | Use Rasterio **windowed reads** — load only the AOI extent of each band, not the full tile. For a 10km² AOI on a 100km² Sentinel-2 tile, this reduces memory from 800MB to approximately 8MB per band. Validate memory usage in Sprint 5 load tests. |
-| **TR-11** | MinIO object storage disk capacity exceeded by accumulated imagery tiles | LOW | HIGH | Implement imagery retention policy: scenes older than 36 months that are not linked to a Case File evidence record are automatically deleted. A purge job runs monthly. Configurable via system settings. |
-| **TR-12** | RBAC bypass via horizontal privilege escalation (analyst accessing another analyst's case files) | LOW | CRITICAL | Every data query is scoped to `req.user.id` or `req.user.role` at the service layer, not just the route layer. Integration test suite includes a permission matrix test: every endpoint is tested from every role, verifying 403 on unauthorized access. This test runs in CI on every PR. |
+| ID        | Risk                                                                                             | Probability | Impact   | Mitigation Strategy                                                                                                                                                                                                                                                                        |
+| --------- | ------------------------------------------------------------------------------------------------ | ----------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **TR-01** | Copernicus Open Access Hub API rate limits or downtime                                           | HIGH        | HIGH     | Implement exponential backoff + retry in `copernicus_client.py`. Cache the latest available scene list locally. For prolonged outages, surface a clear `DATA_FEED_OFFLINE` indicator per PXD §25. Maintain 24-month historical baseline so analysis can proceed on cached data.            |
+| **TR-02** | Cesium terrain rendering performance on lower-end government hardware                            | MEDIUM      | HIGH     | Test on minimum spec hardware (Intel integrated graphics, 8GB RAM) in Sprint 2. If performance is inadequate, implement `useLowPerformanceMode()` hook that reduces terrain detail level and disables atmosphere rendering.                                                                |
+| **TR-03** | Cloud cover during Indian monsoon season (June–September) renders optical imagery unusable       | HIGH        | MEDIUM   | Sentinel-1 SAR imagery is cloud-penetrating. Ensure Sentinel-1 ingestion is complete by Sprint 4. The GSE pipeline must fall back to SAR-based change detection (different thresholds; requires research in Sprint 5).                                                                     |
+| **TR-04** | PostGIS spatial query performance degrading at scale (>50 AOIs, >10,000 zones)                   | LOW         | HIGH     | All geometry columns indexed with GiST. All intersection queries filter by AOI bounding box first (`&&` operator hits GiST index before `ST_Intersects`). Validate with 50-AOI load test in Sprint 8.                                                                                      |
+| **TR-05** | PDF generation (Puppeteer) fails on evidence images loaded from object storage                   | MEDIUM      | MEDIUM   | In Sprint 7: implement pre-fetch of all evidence images as base64 before Puppeteer renders. Set a 120-second job timeout. Implement retry logic. Test with cases having 6 evidence images.                                                                                                 |
+| **TR-06** | India state/district administrative boundary data licensing restricts use                        | MEDIUM      | HIGH     | Verify licensing of Survey of India boundary data before Sprint 2. Alternative: use GADM (Global Administrative Areas) dataset which is freely licensed for non-commercial use.                                                                                                            |
+| **TR-07** | Alert deduplication false merges (two separate nearby mining sites merged)                       | MEDIUM      | MEDIUM   | The deduplication overlap threshold (60%) is configurable as a system setting. Include a mandatory analyst confirmation step — automatic merges are never performed (BR-006). Tune threshold based on Beta testing feedback in Sprint 6.                                                   |
+| **TR-08** | JWTs with 8-hour expiry cause session loss mid-analysis for long-running analysis sessions       | LOW         | MEDIUM   | Implement silent refresh: frontend detects token expiry approaching (15 minutes remaining) and automatically refreshes via a `/auth/refresh` endpoint using a long-lived refresh token stored in an httpOnly cookie.                                                                       |
+| **TR-09** | Python GDAL/Rasterio dependency version conflicts in Docker container                            | MEDIUM      | LOW      | Pin all Python dependency versions in `requirements.txt`. Use the official `osgeo/gdal` Docker base image, which provides a pre-compiled GDAL environment. Test the Docker build in Sprint 1 before any pipeline code is written.                                                          |
+| **TR-10** | Sentinel-2 scene file sizes (110–800MB per tile) create processing memory pressure               | MEDIUM      | HIGH     | Use Rasterio **windowed reads** — load only the AOI extent of each band, not the full tile. For a 10km² AOI on a 100km² Sentinel-2 tile, this reduces memory from 800MB to approximately 8MB per band. Validate memory usage in Sprint 5 load tests.                                       |
+| **TR-11** | MinIO object storage disk capacity exceeded by accumulated imagery tiles                         | LOW         | HIGH     | Implement imagery retention policy: scenes older than 36 months that are not linked to a Case File evidence record are automatically deleted. A purge job runs monthly. Configurable via system settings.                                                                                  |
+| **TR-12** | RBAC bypass via horizontal privilege escalation (analyst accessing another analyst's case files) | LOW         | CRITICAL | Every data query is scoped to `req.user.id` or `req.user.role` at the service layer, not just the route layer. Integration test suite includes a permission matrix test: every endpoint is tested from every role, verifying 403 on unauthorized access. This test runs in CI on every PR. |
 
 ---
 
@@ -2121,6 +2209,7 @@ A task is considered DONE only when ALL of the following are true:
 ### 14.2 Module-Level DoD
 
 **Authentication Module — DONE when:**
+
 - Login, logout, and JWT refresh work end-to-end.
 - All 4 roles (Field Ranger, Analyst, Director, Admin) enforce correct access boundaries across all endpoints (verified by permission matrix integration test).
 - 2FA enforcement active for all roles.
@@ -2129,6 +2218,7 @@ A task is considered DONE only when ALL of the following are true:
 - Audit log entry created on every login and logout event.
 
 **AOI Module — DONE when:**
+
 - CRUD endpoints pass all integration tests.
 - PostGIS polygon stored and retrieved correctly in WGS84.
 - AOI polygon renders correctly on Cesium terrain at all camera altitudes.
@@ -2138,6 +2228,7 @@ A task is considered DONE only when ALL of the following are true:
 - AOI Management admin page renders and functions for all CRUD operations.
 
 **Imagery Module — DONE when:**
+
 - Sentinel-2 scene ingested from Copernicus Hub to MinIO without data corruption (MD5 hash verified).
 - Sentinel-1 scene ingested from Copernicus Hub to MinIO.
 - Ingestion log entry created for every successful and failed acquisition.
@@ -2147,6 +2238,7 @@ A task is considered DONE only when ALL of the following are true:
 - Signed scene URLs expire after the configured period and return 403 thereafter.
 
 **Boundary Module — DONE when:**
+
 - GeoJSON, KML, and Shapefile imports all succeed and correctly store polygon data.
 - Invalid file format returns `400 INVALID_FILE_FORMAT` before any data is modified.
 - Dataset diff comparison is accurate (added/removed/modified counts correct).
@@ -2155,6 +2247,7 @@ A task is considered DONE only when ALL of the following are true:
 - Boundary polygons render on Cesium terrain and are layered correctly with AOI polygons.
 
 **Analysis Module — DONE when:**
+
 - Full pipeline (NDVI → change detection → zone extraction → scoring) executes without error on a real Sentinel-2 scene pair.
 - Detection zones rendered correctly on terrain as terrain-clamped polygons.
 - Severity score matches manual calculation of weighted factors to within ±1 point.
@@ -2165,6 +2258,7 @@ A task is considered DONE only when ALL of the following are true:
 - WebSocket progress events stream correctly from 0% to 100% during execution.
 
 **Alert Module — DONE when:**
+
 - All 7 alert statuses transition correctly per the state machine.
 - Invalid status transitions return `400 INVALID_STATUS_TRANSITION`.
 - Justification note < 50 characters returns `400 JUSTIFICATION_TOO_SHORT` (BR-005, AC-007).
@@ -2175,6 +2269,7 @@ A task is considered DONE only when ALL of the following are true:
 - Field Ranger cannot access Case File export (NFR-008, AC-015).
 
 **Case File Module — DONE when:**
+
 - Case file created only for alerts in `CONFIRMED_ILLEGAL` or `ESCALATED_TO_ENFORCEMENT` status.
 - PDF report generated and downloadable, containing all required sections per PXD §22.4.
 - PDF renders evidence imagery, change polygons, and metadata correctly.
@@ -2184,12 +2279,14 @@ A task is considered DONE only when ALL of the following are true:
 - Audit trail retained verifiably (10-year retention policy configured on DB backup schedule).
 
 **Dashboard Module — DONE when:**
+
 - Summary endpoint returns correct aggregated metrics for all configurable date ranges and filters.
 - Alert trend chart data matches direct SQL count queries (regression test).
 - Deforestation area total matches sum of confirmed `change_zones.area_ha` for CONFIRMED_ILLEGAL alerts.
 - Dashboard renders within 5 seconds under typical data load (NFR-002 partial, AC-012).
 
 **Geospatial Engine — DONE when:**
+
 - NDVI values for a known cloud-free scene match expected values (validated against reference NDVI maps from ISRO or USGS).
 - Cloud masking correctly excludes cloud pixels (verified on scenes with known cloud positions).
 - Zone area computed by GSE matches PostGIS `ST_Area` to within 2% error margin.
@@ -2197,6 +2294,7 @@ A task is considered DONE only when ALL of the following are true:
 - Analysis pipeline completes within 30 minutes for a 100 km² AOI at 10m resolution.
 
 **Frontend (All Screens) — DONE when:**
+
 - All 20 V1 screens (SCR-01 through SCR-20) render without JavaScript console errors.
 - Keyboard navigation works for all primary actions on all screens.
 - ARIA labels present on all interactive elements.
@@ -2206,6 +2304,7 @@ A task is considered DONE only when ALL of the following are true:
 - `NFR-012` learnability test: 5 representative Field Ranger users complete the 3 target tasks within 30 minutes of tutorial completion.
 
 **Production Infrastructure — DONE when:**
+
 - Application deployed and reachable at the designated production URL over HTTPS.
 - TLS certificate installed and auto-renewing.
 - Database daily backup running and restorable to < 1-hour recovery point.
@@ -2216,8 +2315,8 @@ A task is considered DONE only when ALL of the following are true:
 
 ---
 
-*End of Document — IBP-SATMSS-001 v1.0.0*
+_End of Document — IBP-SATMSS-001 v1.0.0_
 
-*This document represents the final planning artifact for SAT-MSS Version 1.0. Development may begin upon stakeholder sign-off. Changes to scope, architecture, or requirements discovered during development must be formally logged as Engineering Change Requests and reviewed by the Tech Lead and Principal Architect before implementation.*
+_This document represents the final planning artifact for SAT-MSS Version 1.0. Development may begin upon stakeholder sign-off. Changes to scope, architecture, or requirements discovered during development must be formally logged as Engineering Change Requests and reviewed by the Tech Lead and Principal Architect before implementation._
 
-*Next document to be produced: Sprint 1 Task Board (Jira/Linear backlog import from Section 10 of this document).*
+_Next document to be produced: Sprint 1 Task Board (Jira/Linear backlog import from Section 10 of this document)._

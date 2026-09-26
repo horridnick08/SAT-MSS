@@ -11,7 +11,7 @@ import {
   FileText,
   Sliders,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
 } from 'lucide-react';
 
 interface SidebarItem {
@@ -37,24 +37,20 @@ export default function Sidebar() {
 
   return (
     <aside
-      className={`relative flex flex-col h-full bg-[#0D1117]/80 backdrop-blur-md border-r border-[#2A3547]/50 transition-all duration-300 z-20 ${
+      className={`relative z-20 flex h-full flex-col border-r border-[#2A3547]/50 bg-[#0D1117]/80 backdrop-blur-md transition-all duration-300 ${
         collapsed ? 'w-16' : 'w-64'
       }`}
     >
       {/* Collapse Trigger Button */}
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="absolute -right-3.5 top-5 flex h-7 w-7 items-center justify-center rounded-full border border-[#2A3547] bg-[#0D1117] text-[#8A9BBB] hover:text-[#E8EAF0] shadow-md z-30 transition-all hover:scale-105 active:scale-95"
+        className="absolute -right-3.5 top-5 z-30 flex h-7 w-7 items-center justify-center rounded-full border border-[#2A3547] bg-[#0D1117] text-[#8A9BBB] shadow-md transition-all hover:scale-105 hover:text-[#E8EAF0] active:scale-95"
       >
-        {collapsed ? (
-          <ChevronRight className="h-4 w-4" />
-        ) : (
-          <ChevronLeft className="h-4 w-4" />
-        )}
+        {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
       </button>
 
       {/* Navigation section */}
-      <nav className="flex-grow py-6 flex flex-col gap-1.5 px-3">
+      <nav className="flex flex-grow flex-col gap-1.5 px-3 py-6">
         {SIDEBAR_ITEMS.map((item) => {
           const Icon = item.icon;
           const isActive = activeItem === item.id;
@@ -63,17 +59,17 @@ export default function Sidebar() {
             <button
               key={item.id}
               onClick={() => setActiveItem(item.id)}
-              className={`flex items-center w-full rounded-lg px-3 py-3 transition-all relative overflow-hidden group ${
+              className={`group relative flex w-full items-center overflow-hidden rounded-lg px-3 py-3 transition-all ${
                 isActive
-                  ? 'bg-[#E88C30]/10 text-[#E88C30] border border-[#E88C30]/20 font-bold'
-                  : 'text-[#8A9BBB] hover:bg-white/5 hover:text-[#E8EAF0] border border-transparent'
+                  ? 'border border-[#E88C30]/20 bg-[#E88C30]/10 font-bold text-[#E88C30]'
+                  : 'border border-transparent text-[#8A9BBB] hover:bg-white/5 hover:text-[#E8EAF0]'
               }`}
             >
               {/* Highlight bar for active item */}
               {isActive && (
-                <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#E88C30] rounded-r-md" />
+                <div className="absolute bottom-0 left-0 top-0 w-1 rounded-r-md bg-[#E88C30]" />
               )}
-              
+
               <Icon
                 className={`h-5 w-5 shrink-0 transition-transform group-hover:scale-110 ${
                   collapsed ? 'mx-auto' : 'mr-3'
@@ -81,9 +77,7 @@ export default function Sidebar() {
               />
 
               {!collapsed && (
-                <span className="text-xs font-display tracking-widest uppercase">
-                  {item.label}
-                </span>
+                <span className="font-display text-xs uppercase tracking-widest">{item.label}</span>
               )}
             </button>
           );
@@ -92,13 +86,13 @@ export default function Sidebar() {
 
       {/* System Integrity HUD Info Footer */}
       {!collapsed && (
-        <div className="p-4 border-t border-[#2A3547]/30 bg-[#06080D]/40">
+        <div className="border-t border-[#2A3547]/30 bg-[#06080D]/40 p-4">
           <div className="flex flex-col gap-2">
-            <div className="flex items-center justify-between text-[9px] font-mono tracking-widest text-[#4E5D7A]">
+            <div className="flex items-center justify-between font-mono text-[9px] tracking-widest text-[#4E5D7A]">
               <span>SECTOR</span>
               <span className="text-[#E8EAF0]">IND-MIN-01</span>
             </div>
-            <div className="flex items-center justify-between text-[9px] font-mono tracking-widest text-[#4E5D7A]">
+            <div className="flex items-center justify-between font-mono text-[9px] tracking-widest text-[#4E5D7A]">
               <span>GRID LIMIT</span>
               <span className="text-[#E8EAF0]">LAT/LON BOUNDS</span>
             </div>

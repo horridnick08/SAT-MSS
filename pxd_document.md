@@ -1,21 +1,23 @@
 # Product Experience Design Document (PXD)
+
 ## SAT-MSS — Satellite Mining Surveillance System
+
 ### Mission Control Interface · Earth Observation Platform · India MVP
 
 ---
 
-| Document Control | |
-|---|---|
-| **Document ID** | PXD-SATMSS-001 |
-| **Version** | 1.0.0 |
-| **Status** | Draft — Internal Design Review |
-| **Prepared By** | Principal Product Architect / GIS UX Lead |
-| **Review Authority** | Head of Product, Head of Design, Head of Engineering |
-| **Classification** | Internal — Design Confidential |
+| Document Control     |                                                                  |
+| -------------------- | ---------------------------------------------------------------- |
+| **Document ID**      | PXD-SATMSS-001                                                   |
+| **Version**          | 1.0.0                                                            |
+| **Status**           | Draft — Internal Design Review                                   |
+| **Prepared By**      | Principal Product Architect / GIS UX Lead                        |
+| **Review Authority** | Head of Product, Head of Design, Head of Engineering             |
+| **Classification**   | Internal — Design Confidential                                   |
 | **Source Documents** | `problem_definition.md` (PRD), `srs_document.md` (SRS-SIMDS-001) |
-| **Date Issued** | 2026-07-18 |
-| **Product Codename** | SAT-MSS |
-| **Target Geography** | India (MVP) |
+| **Date Issued**      | 2026-07-18                                                       |
+| **Product Codename** | SAT-MSS                                                          |
+| **Target Geography** | India (MVP)                                                      |
 
 ---
 
@@ -35,14 +37,14 @@ The product sits in a tradition of the world's most respected spatial intelligen
 
 ### 1.3 Emotional Design Intent
 
-| Moment | Intended Emotion |
-|---|---|
-| First landing on Mission Control | Awe. Orientation. Authority. |
-| Zooming into a flagged district | Urgency. Precision. Focus. |
-| Drawing an AOI over forest terrain | Control. Surgical accuracy. |
-| Watching analysis run | Anticipation. Confidence in the system. |
-| Viewing before-and-after imagery | Clarity. The evidence speaks. |
-| Generating a report | Finality. The mission is complete. |
+| Moment                             | Intended Emotion                        |
+| ---------------------------------- | --------------------------------------- |
+| First landing on Mission Control   | Awe. Orientation. Authority.            |
+| Zooming into a flagged district    | Urgency. Precision. Focus.              |
+| Drawing an AOI over forest terrain | Control. Surgical accuracy.             |
+| Watching analysis run              | Anticipation. Confidence in the system. |
+| Viewing before-and-after imagery   | Clarity. The evidence speaks.           |
+| Generating a report                | Finality. The mission is complete.      |
 
 ### 1.4 What SAT-MSS is Not
 
@@ -71,16 +73,19 @@ The product sits in a tradition of the world's most respected spatial intelligen
 **Background:** Decade-long experience in satellite data analysis. Trained in multi-spectral image interpretation, change detection, and GIS-based spatial analysis. Fluent in NDVI, SAR interpretation, and spectral signature comparison. Uses ArcGIS, QGIS, and ERDAS Imagine. Technically sophisticated but not a software developer.
 
 **Goals:**
+
 - Detect unauthorized surface mining incursions within assigned districts.
 - Build irrefutable, time-stamped evidence packages for regulatory submission.
 - Monitor the rate of expansion of known illegal mining clusters.
 
 **Pain Points with Existing Tools:**
+
 - GIS software requires excessive manual steps to produce regulatory-grade reports.
 - Switching between image viewers, GIS, and document editors breaks analysis flow.
 - Existing web interfaces feel generic — they do not respect the analytical gravity of the work.
 
 **What Aryan wants from SAT-MSS:**
+
 > "I want to navigate directly to a district, pull the latest Sentinel imagery, draw my AOI, run the analysis, and have the system show me exactly where the forest cover has been destroyed. Then I want one button to produce a report my department director can sign and submit to the Ministry."
 
 ---
@@ -222,6 +227,7 @@ Camera is at approximately 15–25 km altitude. Terrain is highly detailed. Indi
 **Existing AOI Selection:** Glowing boundary polygons (green/amber/red by status). Click an AOI: polygon pulses, camera zooms to frame the AOI, AOI Context Panel slides in from right.
 
 **Drawing Mode:**
+
 - Fine 1km grid overlay appears over terrain.
 - Cursor transforms to precision crosshair.
 - Click to place vertices anchored to terrain (lat/lon).
@@ -237,6 +243,7 @@ Breadcrumb: `INDIA > ODISHA > SUNDARGARH > AOI-SG-047`
 ### SCREEN 07 — Satellite Imagery Load
 
 Camera settled near-overhead with slight oblique angle. Imagery Configuration Panel appears from right:
+
 - Date range selector (From/To calendar wheels; default 24-month lookback)
 - Band selection: Natural Color, False Color (NIR), SWIR, SAR
 - Cloud cover tolerance slider (0–30%)
@@ -251,6 +258,7 @@ Breadcrumb: `INDIA > ODISHA > SUNDARGARH > AOI-SG-047 > 2025-11-14 (S2A)`
 ### SCREEN 08 — Run Analysis
 
 Analysis Configuration Panel appears from right:
+
 - Analysis Type: Land-Cover Change Detection (default for V1)
 - Baseline scene display (read-only)
 - Target scene display (read-only or selectable)
@@ -267,12 +275,12 @@ On click: panel collapses. Scene dims to 60% opacity. A luminous scanning line s
 
 Scanning line completes and fades. Imagery returns to full opacity. Detection overlays appear on terrain surface:
 
-| Category | Fill Color | Opacity | Border |
-|---|---|---|---|
-| Vegetation Loss | Warm Red `#FF4C29` | 35% | Solid 2px |
-| Exposed Bare Earth | Orange `#FF8C42` | 35% | Solid 2px |
-| New Water / Tailings | Amber `#FFD166` | 30% | Dashed 2px |
-| Access Road | Cyan `#06D6A0` | 20% | Dashed 1px |
+| Category             | Fill Color         | Opacity | Border     |
+| -------------------- | ------------------ | ------- | ---------- |
+| Vegetation Loss      | Warm Red `#FF4C29` | 35%     | Solid 2px  |
+| Exposed Bare Earth   | Orange `#FF8C42`   | 35%     | Solid 2px  |
+| New Water / Tailings | Amber `#FFD166`    | 30%     | Dashed 2px |
+| Access Road          | Cyan `#06D6A0`     | 20%     | Dashed 1px |
 
 Results Panel (right): Total flagged change area (`342.7 ha flagged`), zone count, severity score (large, color-ringed), concession intersection status, protected area status (red chip if incursion).
 
@@ -301,6 +309,7 @@ Report Assembly Panel opens from right (40% width). Terrain visible in backgroun
 **Auto-populated:** Case reference, AOI details, analyst identity, imagery sources, severity score, change area, zone count, concession/protected area classification.
 
 **Analyst-required:**
+
 - Evidence imagery: drag from thumbnail grid into evidence slots (minimum 2, maximum 6)
 - Image captions (required per image)
 - Analyst notes (minimum 100 characters)
@@ -309,6 +318,7 @@ Report Assembly Panel opens from right (40% width). Terrain visible in backgroun
 **Live PDF Preview:** Updates in real time as sections are completed. `Full Preview` opens scrollable preview.
 
 **Export Actions (fixed at panel bottom):**
+
 - `EXPORT PDF REPORT` (primary, Mission Amber)
 - `EXPORT GEOJSON PACKAGE` (secondary, outlined)
 - `SAVE DRAFT` (tertiary, text-only)
@@ -328,6 +338,7 @@ Camera retracts: Site → AOI → District → State → India → Globe. Contin
 ### 5.1 Spatial Navigation as Primary Metaphor
 
 Navigation hierarchy:
+
 ```
 GLOBAL ORBIT           (~full Earth visible)
      ↕
@@ -394,28 +405,28 @@ Exact inverse of descent. Camera rises, tilts outward, view expands. Duration: 4
 
 ### 7.1 Interaction at Each Level
 
-| Zoom Level | Hover Effect | Click Effect |
-|---|---|---|
-| Global | Country tooltip | Initiate descent |
-| India Overview | State context card | Begin state zoom |
-| State Level | District context card | Begin district zoom |
-| District Level | AOI summary tooltip | AOI selection or drawing |
-| AOI Level | Zone type indicator | Zone detail card + camera focus |
-| Site Level | Coordinate readout | Precision vertex placement |
+| Zoom Level     | Hover Effect          | Click Effect                    |
+| -------------- | --------------------- | ------------------------------- |
+| Global         | Country tooltip       | Initiate descent                |
+| India Overview | State context card    | Begin state zoom                |
+| State Level    | District context card | Begin district zoom             |
+| District Level | AOI summary tooltip   | AOI selection or drawing        |
+| AOI Level      | Zone type indicator   | Zone detail card + camera focus |
+| Site Level     | Coordinate readout    | Precision vertex placement      |
 
 ### 7.2 Earth Rendering Layers
 
-| Layer | Visibility Range |
-|---|---|
-| Base Terrain (DEM + composite imagery) | Always |
-| Atmosphere (sky dome + limb haze) | Always |
-| Administrative Boundaries | India level and below |
-| Concession Boundaries | District level and below |
-| Protected Area Boundaries | District level and below |
-| AOI Polygons | State level and below |
-| Satellite Imagery (scene draped on terrain) | AOI level and below |
-| Detection Overlays (change zones) | AOI level and below |
-| City / Infrastructure Labels | District level and below |
+| Layer                                       | Visibility Range         |
+| ------------------------------------------- | ------------------------ |
+| Base Terrain (DEM + composite imagery)      | Always                   |
+| Atmosphere (sky dome + limb haze)           | Always                   |
+| Administrative Boundaries                   | India level and below    |
+| Concession Boundaries                       | District level and below |
+| Protected Area Boundaries                   | District level and below |
+| AOI Polygons                                | State level and below    |
+| Satellite Imagery (scene draped on terrain) | AOI level and below      |
+| Detection Overlays (change zones)           | AOI level and below      |
+| City / Infrastructure Labels                | District level and below |
 
 All layers have individual opacity sliders in a **Layer Control Popover** (icon top-right of terrain view).
 
@@ -451,14 +462,14 @@ All layers have individual opacity sliders in a **Layer Control Popover** (icon 
 
 ### 8.2 Top Mission Bar Elements
 
-| Element | Position | Content |
-|---|---|---|
-| SAT-MSS logotype | Far left | Logo + wordmark |
-| Spatial breadcrumb | Center-left | Current spatial position |
-| Mission clock | Center-right | Date + IST time, live |
-| Mode indicator | Right-center | ACTIVE / REVIEW / OFFLINE |
-| Notification bell | Right | Count badge |
-| User avatar | Far right | Profile/settings |
+| Element            | Position     | Content                   |
+| ------------------ | ------------ | ------------------------- |
+| SAT-MSS logotype   | Far left     | Logo + wordmark           |
+| Spatial breadcrumb | Center-left  | Current spatial position  |
+| Mission clock      | Center-right | Date + IST time, live     |
+| Mode indicator     | Right-center | ACTIVE / REVIEW / OFFLINE |
+| Notification bell  | Right        | Count badge               |
+| User avatar        | Far right    | Profile/settings          |
 
 ### 8.3 Left Command Panel — Detailed
 
@@ -487,14 +498,14 @@ All layers have individual opacity sliders in a **Layer Control Popover** (icon 
 
 ### 9.2 Size as Authority
 
-| Element | Hierarchy Role |
-|---|---|
-| 3D Globe | Supreme |
+| Element                          | Hierarchy Role            |
+| -------------------------------- | ------------------------- |
+| 3D Globe                         | Supreme                   |
 | Alert severity score (numerical) | Dominant within its panel |
-| AOI name / Case file reference | Primary labels |
-| Metadata (dates, coordinates) | Secondary |
-| System status indicators | Tertiary |
-| Keyboard shortcut hints | Ambient |
+| AOI name / Case file reference   | Primary labels            |
+| Metadata (dates, coordinates)    | Secondary                 |
+| System status indicators         | Tertiary                  |
+| Keyboard shortcut hints          | Ambient                   |
 
 ### 9.3 Depth Stacking
 
@@ -512,6 +523,7 @@ All layers have individual opacity sliders in a **Layer Control Popover** (icon 
 ### 10.1 Design Language Name: **Orbital Glass**
 
 Three influences:
+
 - NASA/ISRO mission control room aesthetics (dark, high-contrast, data-primary)
 - macOS / visionOS glassmorphism (translucency, depth, material blur)
 - Earth Observation cartographic tradition (ArcGIS, QGIS, Sentinel Hub — spatial precision, clean boundary rendering)
@@ -544,19 +556,19 @@ Three influences:
 
 ### 11.2 Animation Vocabulary
 
-| Animation | Duration | Easing |
-|---|---|---|
-| Splash Earth emergence | 2,500ms | ease-in-out |
-| Mission Control panel assembly | 400ms | ease-out |
-| Camera descent (state) | 5,000ms | custom spatial ease |
-| Camera descent (district) | 3,500ms | custom spatial ease |
-| Camera descent (AOI) | 2,000ms | ease-out |
-| Panel slide-in (edge panels) | 350ms | ease-out |
-| Imagery crossfade (scene change) | 400ms | ease-in-out |
-| Detection zone appear (staggered) | 400ms per zone | ease-out |
-| Alert pulse ring | 3,000ms cycle | ease-in-out loop |
-| Timeline scrub crossfade | 300ms | ease-in-out |
-| Camera retraction (full return) | 4,000ms | custom spatial ease |
+| Animation                         | Duration       | Easing              |
+| --------------------------------- | -------------- | ------------------- |
+| Splash Earth emergence            | 2,500ms        | ease-in-out         |
+| Mission Control panel assembly    | 400ms          | ease-out            |
+| Camera descent (state)            | 5,000ms        | custom spatial ease |
+| Camera descent (district)         | 3,500ms        | custom spatial ease |
+| Camera descent (AOI)              | 2,000ms        | ease-out            |
+| Panel slide-in (edge panels)      | 350ms          | ease-out            |
+| Imagery crossfade (scene change)  | 400ms          | ease-in-out         |
+| Detection zone appear (staggered) | 400ms per zone | ease-out            |
+| Alert pulse ring                  | 3,000ms cycle  | ease-in-out loop    |
+| Timeline scrub crossfade          | 300ms          | ease-in-out         |
+| Camera retraction (full return)   | 4,000ms        | custom spatial ease |
 
 ---
 
@@ -596,49 +608,49 @@ Dark, science-instrument palette. Base: deep space black. Accent colors drawn fr
 
 ### 13.2 Base Palette
 
-| Token | Hex | Usage |
-|---|---|---|
-| `space-black` | `#06080D` | Primary background |
-| `mission-night` | `#0D1117` | Panel backgrounds |
-| `deep-panel` | `#131920` | Secondary panels |
-| `surface-panel` | `#1C2333` | Card surfaces |
-| `border-dim` | `#2A3547` | Dividers, inactive borders |
-| `border-active` | `#3D5080` | Active/focused borders |
+| Token           | Hex       | Usage                      |
+| --------------- | --------- | -------------------------- |
+| `space-black`   | `#06080D` | Primary background         |
+| `mission-night` | `#0D1117` | Panel backgrounds          |
+| `deep-panel`    | `#131920` | Secondary panels           |
+| `surface-panel` | `#1C2333` | Card surfaces              |
+| `border-dim`    | `#2A3547` | Dividers, inactive borders |
+| `border-active` | `#3D5080` | Active/focused borders     |
 
 ### 13.3 Earth Accent Palette
 
-| Token | Hex | Usage |
-|---|---|---|
-| `terrain-green` | `#1A4A2E` | Healthy vegetation indicator |
-| `alert-amber` | `#E88C30` | Active alerts, pending states |
-| `critical-red` | `#C94040` | Confirmed incursions, critical |
-| `water-cyan` | `#1AABB0` | Water body detections, AOI borders |
-| `bare-orange` | `#C77A3A` | Bare soil detections |
-| `road-teal` | `#06D6A0` | Access road detections |
-| `concession-purple` | `#7B5EA7` | Licensed concession boundaries |
-| `protected-forest-green` | `#2D8653` | Protected area boundaries |
+| Token                    | Hex       | Usage                              |
+| ------------------------ | --------- | ---------------------------------- |
+| `terrain-green`          | `#1A4A2E` | Healthy vegetation indicator       |
+| `alert-amber`            | `#E88C30` | Active alerts, pending states      |
+| `critical-red`           | `#C94040` | Confirmed incursions, critical     |
+| `water-cyan`             | `#1AABB0` | Water body detections, AOI borders |
+| `bare-orange`            | `#C77A3A` | Bare soil detections               |
+| `road-teal`              | `#06D6A0` | Access road detections             |
+| `concession-purple`      | `#7B5EA7` | Licensed concession boundaries     |
+| `protected-forest-green` | `#2D8653` | Protected area boundaries          |
 
 ### 13.4 System UI Palette
 
-| Token | Hex | Usage |
-|---|---|---|
-| `text-primary` | `#E8EAF0` | Primary readable text |
-| `text-secondary` | `#8A9BBB` | Secondary labels, metadata |
-| `text-tertiary` | `#4E5D7A` | Placeholders, hints |
-| `mission-amber` | `#E88C30` | Primary action buttons |
-| `mission-amber-hover` | `#F5A042` | Primary button hover |
-| `success-signal` | `#2D8653` | Success states |
-| `error-signal` | `#C94040` | Error states, critical alerts |
+| Token                 | Hex       | Usage                         |
+| --------------------- | --------- | ----------------------------- |
+| `text-primary`        | `#E8EAF0` | Primary readable text         |
+| `text-secondary`      | `#8A9BBB` | Secondary labels, metadata    |
+| `text-tertiary`       | `#4E5D7A` | Placeholders, hints           |
+| `mission-amber`       | `#E88C30` | Primary action buttons        |
+| `mission-amber-hover` | `#F5A042` | Primary button hover          |
+| `success-signal`      | `#2D8653` | Success states                |
+| `error-signal`        | `#C94040` | Error states, critical alerts |
 
 ### 13.5 Severity Score Color Gradient
 
-| Score Range | Label | Hex |
-|---|---|---|
-| 1–30 | Low | `#2D8653` |
-| 31–55 | Moderate | `#8BC34A` |
-| 56–70 | Elevated | `#E88C30` |
-| 71–85 | High | `#D4541A` |
-| 86–100 | Critical | `#C94040` |
+| Score Range | Label    | Hex       |
+| ----------- | -------- | --------- |
+| 1–30        | Low      | `#2D8653` |
+| 31–55       | Moderate | `#8BC34A` |
+| 56–70       | Elevated | `#E88C30` |
+| 71–85       | High     | `#D4541A` |
+| 86–100      | Critical | `#C94040` |
 
 ---
 
@@ -654,21 +666,21 @@ Dark, science-instrument palette. Base: deep space black. Accent colors drawn fr
 
 ### 14.2 Type Scale
 
-| Token | Typeface | Size | Weight | Usage |
-|---|---|---|---|---|
-| `display-xl` | Orbitron | 32px | 700 | Splash screen title |
-| `display-lg` | Orbitron | 24px | 700 | Section titles |
-| `display-md` | Orbitron | 18px | 400 | Panel headers, mode indicators |
-| `display-sm` | Orbitron | 13px | 400 | Subsection titles |
-| `body-lg` | Inter | 16px | 400 | Primary body |
-| `body-md` | Inter | 14px | 400 | Secondary body, alert descriptions |
-| `body-sm` | Inter | 12px | 400 | Metadata, timestamps |
-| `label-md` | Inter | 13px | 600 | Form labels, column headers |
-| `label-sm` | Inter | 11px | 600 | Chips, badges, status labels |
-| `data-lg` | JetBrains Mono | 16px | 500 | Coordinates, area measurements |
-| `data-md` | JetBrains Mono | 13px | 400 | Scene IDs, reference numbers |
-| `data-sm` | JetBrains Mono | 11px | 400 | Fine-grain metadata |
-| `severity-number` | Orbitron | 48px | 700 | Severity score large display |
+| Token             | Typeface       | Size | Weight | Usage                              |
+| ----------------- | -------------- | ---- | ------ | ---------------------------------- |
+| `display-xl`      | Orbitron       | 32px | 700    | Splash screen title                |
+| `display-lg`      | Orbitron       | 24px | 700    | Section titles                     |
+| `display-md`      | Orbitron       | 18px | 400    | Panel headers, mode indicators     |
+| `display-sm`      | Orbitron       | 13px | 400    | Subsection titles                  |
+| `body-lg`         | Inter          | 16px | 400    | Primary body                       |
+| `body-md`         | Inter          | 14px | 400    | Secondary body, alert descriptions |
+| `body-sm`         | Inter          | 12px | 400    | Metadata, timestamps               |
+| `label-md`        | Inter          | 13px | 600    | Form labels, column headers        |
+| `label-sm`        | Inter          | 11px | 600    | Chips, badges, status labels       |
+| `data-lg`         | JetBrains Mono | 16px | 500    | Coordinates, area measurements     |
+| `data-md`         | JetBrains Mono | 13px | 400    | Scene IDs, reference numbers       |
+| `data-sm`         | JetBrains Mono | 11px | 400    | Fine-grain metadata                |
+| `severity-number` | Orbitron       | 48px | 700    | Severity score large display       |
 
 ### 14.3 Letter Spacing
 
@@ -687,6 +699,7 @@ Three-tier material system. All surfaces are non-opaque — Earth imagery bleeds
 ### 15.2 Material Tiers
 
 **Tier 1 — Deep Glass (Command Panels, Mission Bar):**
+
 ```
 Background:  rgba(13, 17, 23, 0.80)
 Blur:        24px
@@ -696,6 +709,7 @@ Shadow:      0 4px 32px rgba(0, 0, 0, 0.40)
 ```
 
 **Tier 2 — Mid Glass (Configuration Panels, Context Cards):**
+
 ```
 Background:  rgba(28, 35, 51, 0.72)
 Blur:        16px
@@ -705,6 +719,7 @@ Shadow:      0 2px 16px rgba(0, 0, 0, 0.30)
 ```
 
 **Tier 3 — Light Glass (Tooltips, Hover Cards):**
+
 ```
 Background:  rgba(45, 58, 82, 0.60)
 Blur:        8px
@@ -720,14 +735,14 @@ Shadow:      0 2px 8px rgba(0, 0, 0, 0.20)
 
 ### 15.4 Corner Radius System
 
-| Element | Radius |
-|---|---|
-| Full-height edge panels | 0px |
-| Configuration panels (floating) | 12px |
-| Context cards | 10px |
-| Tooltips | 8px |
-| Chips / badges | 999px |
-| Buttons | 8px |
+| Element                         | Radius |
+| ------------------------------- | ------ |
+| Full-height edge panels         | 0px    |
+| Configuration panels (floating) | 12px   |
+| Context cards                   | 10px   |
+| Tooltips                        | 8px    |
+| Chips / badges                  | 999px  |
+| Buttons                         | 8px    |
 
 ---
 
@@ -736,6 +751,7 @@ Shadow:      0 2px 8px rgba(0, 0, 0, 0.20)
 ### 16.1 The Earth is Not a Map
 
 The globe uses perspective projection, not flat map tiles. This means:
+
 - AOI polygons wrap terrain contour — on mountains they follow ridgelines and valleys.
 - Detection zones are terrain-following — visible as terrain-accurate polygons from oblique angles.
 - Labels are billboard-rendered (always face camera) for legibility at any angle.
@@ -743,6 +759,7 @@ The globe uses perspective projection, not flat map tiles. This means:
 ### 16.2 Terrain Fidelity Requirements
 
 The 3D terrain uses real-world DEM data for India:
+
 - Accurate profiles for Himalayas, Western Ghats, Eastern Ghats, Vindhyas.
 - Correct river valleys and channels at district zoom.
 - Forest texture at lower zoom; satellite imagery at close range.
@@ -750,14 +767,14 @@ The 3D terrain uses real-world DEM data for India:
 
 ### 16.3 Camera Pitch by Zoom Level
 
-| Zoom Level | Camera Pitch | Visual Effect |
-|---|---|---|
-| Global | 20° from nadir | Oblique globe, depth visible |
-| India Overview | 30° | Topographic depth |
-| State Level | 25° | Mountains rendered 3D |
-| District Level | 20° | River valleys visible |
-| AOI Level | 10° | Near-overhead; terrain relief subtle |
-| Site Level | 5° | Overhead; maximum spatial precision |
+| Zoom Level     | Camera Pitch   | Visual Effect                        |
+| -------------- | -------------- | ------------------------------------ |
+| Global         | 20° from nadir | Oblique globe, depth visible         |
+| India Overview | 30°            | Topographic depth                    |
+| State Level    | 25°            | Mountains rendered 3D                |
+| District Level | 20°            | River valleys visible                |
+| AOI Level      | 10°            | Near-overhead; terrain relief subtle |
+| Site Level     | 5°             | Overhead; maximum spatial precision  |
 
 ### 16.4 Ambient Earth Behavior
 
@@ -782,6 +799,7 @@ Visual design at each workflow step mirrors how EO scientists actually think:
 ### 17.2 Scene Metadata Display
 
 Always visible for every loaded scene (Data typeface, compact badge format):
+
 - Satellite and sensor: `Sentinel-2A · MSI`
 - Acquisition date/time: `2025-11-14 · 05:22 UTC`
 - Tile ID: `T44QPE`
@@ -792,6 +810,7 @@ Always visible for every loaded scene (Data typeface, compact badge format):
 ### 17.3 Band Selection Visualization
 
 Four options, each with a visual preview thumbnail chip showing how the scene appears in that composite:
+
 - Natural Color (4-3-2)
 - False Color NIR (8-4-3) — vegetation appears red
 - SWIR (12-8-4) — enhanced mineral and moisture discrimination
@@ -873,6 +892,7 @@ From District Selection via `+ Define New AOI` in left panel or right-click cont
 ### 20.2 Drawing Mode Visual State
 
 Left panel switches to compact Drawing Toolbar (60px vertical strip):
+
 - `✱` Place vertex (active default)
 - `↩` Undo last vertex
 - `⊠` Clear and restart
@@ -892,6 +912,7 @@ Cursor: precision crosshair. Terrain: fine 1km grid overlay (low opacity). Drawi
 ### 20.4 AOI Confirmation
 
 Panel appears after polygon close:
+
 - AOI Name (required text input)
 - Priority radio chips: HIGH / MEDIUM / LOW
 - State and District: auto-populated, read-only
@@ -909,6 +930,7 @@ Edit mode: all vertices shown as draggable handles. New vertices insertable by c
 ### 21.1 Pre-Analysis Validation
 
 Analysis blocked (button disabled + tooltip) if:
+
 - No AOI selected
 - Fewer than 2 available scenes in date range
 - No baseline/target scene explicitly identified
@@ -970,12 +992,12 @@ On `EXPORT PDF REPORT` click: button transforms to `GENERATING PDF...` with spin
 
 **Philosophy:** Spatially grounded. Never blank white panels. Empty states occur within the Earth context and carry the system visual language.
 
-| Scenario | Visual Treatment | Action Offered |
-|---|---|---|
-| No AOIs in District | `No AOIs defined in this district.` — terrain remains live and interactive | `+ Define First AOI` (Mission Amber) |
-| No Imagery in Date Range | `No scenes meeting your criteria. Try expanding the date range or increasing the cloud cover threshold.` | `Expand Date Range` / `Adjust Cloud Tolerance` |
-| No Alerts in Queue | Dim orbital radar sweep animation returning nothing. `No active alerts. All zones within parameters.` — a reassuring positive empty state | None (informational) |
-| No Case Files | Dim case file icon with dotted border. `No case files compiled. Begin an analysis to generate your first case file.` | None (contextual hint) |
+| Scenario                 | Visual Treatment                                                                                                                          | Action Offered                                 |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| No AOIs in District      | `No AOIs defined in this district.` — terrain remains live and interactive                                                                | `+ Define First AOI` (Mission Amber)           |
+| No Imagery in Date Range | `No scenes meeting your criteria. Try expanding the date range or increasing the cloud cover threshold.`                                  | `Expand Date Range` / `Adjust Cloud Tolerance` |
+| No Alerts in Queue       | Dim orbital radar sweep animation returning nothing. `No active alerts. All zones within parameters.` — a reassuring positive empty state | None (informational)                           |
+| No Case Files            | Dim case file icon with dotted border. `No case files compiled. Begin an analysis to generate your first case file.`                      | None (contextual hint)                         |
 
 ---
 
@@ -983,13 +1005,13 @@ On `EXPORT PDF REPORT` click: button transforms to `GENERATING PDF...` with spin
 
 **Philosophy:** System is working, making progress, spatial context is maintained. Earth always visible.
 
-| Scenario | Loading Treatment |
-|---|---|
-| Satellite imagery loading | Progressive coarse-to-fine resolution. Pulsing blue border on AOI polygon. Border fades on completion. |
-| Analysis execution | Scanning line animation + `PROCESSING · [%]` progress readout |
-| PDF generation | Button → `GENERATING PDF...` + rotating spinner ring (16px, 1 rotation/second) |
-| Concession boundary layer | Horizontal progress bar in Layer Control Popover. Shown only if > 500ms load time. |
-| Mission Control initial load | Progressive Earth resolution + panel assembly animation. |
+| Scenario                     | Loading Treatment                                                                                      |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Satellite imagery loading    | Progressive coarse-to-fine resolution. Pulsing blue border on AOI polygon. Border fades on completion. |
+| Analysis execution           | Scanning line animation + `PROCESSING · [%]` progress readout                                          |
+| PDF generation               | Button → `GENERATING PDF...` + rotating spinner ring (16px, 1 rotation/second)                         |
+| Concession boundary layer    | Horizontal progress bar in Layer Control Popover. Shown only if > 500ms load time.                     |
+| Mission Control initial load | Progressive Earth resolution + panel assembly animation.                                               |
 
 ---
 
@@ -997,13 +1019,13 @@ On `EXPORT PDF REPORT` click: button transforms to `GENERATING PDF...` with spin
 
 **Philosophy:** Immediately visible, precise, actionable.
 
-| Scenario | Visual Treatment | Actions |
-|---|---|---|
-| Data Feed Offline | `● Data Feed: OFFLINE` in left panel (red). Notification badge appears. Imagery using cached data shows banner: `Using cached data · Feed offline since [time]` | None required; informational |
-| Analysis Failed | Scanning animation halts. `ANALYSIS FAILED · [specific reason]`. Results Panel does not open. Error card with cause. | `Retry with Different Scene` / `Contact Support` |
-| Boundary Import Failed | Top-right toast: `⚠ Boundary import failed — [specific reason]`. 8 seconds, dismissible. | Re-upload with corrected file |
-| Session Timeout | Semi-transparent overlay: `Session expired due to inactivity. Your work has been auto-saved.` Earth continues rotating behind overlay. | `RESUME SESSION` (Mission Amber) |
-| Unsaved Navigation Attempt | Inline confirmation strip below action: `Unsaved changes will be lost. Continue?` | `YES, CONTINUE` / `CANCEL` |
+| Scenario                   | Visual Treatment                                                                                                                                                | Actions                                          |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| Data Feed Offline          | `● Data Feed: OFFLINE` in left panel (red). Notification badge appears. Imagery using cached data shows banner: `Using cached data · Feed offline since [time]` | None required; informational                     |
+| Analysis Failed            | Scanning animation halts. `ANALYSIS FAILED · [specific reason]`. Results Panel does not open. Error card with cause.                                            | `Retry with Different Scene` / `Contact Support` |
+| Boundary Import Failed     | Top-right toast: `⚠ Boundary import failed — [specific reason]`. 8 seconds, dismissible.                                                                        | Re-upload with corrected file                    |
+| Session Timeout            | Semi-transparent overlay: `Session expired due to inactivity. Your work has been auto-saved.` Earth continues rotating behind overlay.                          | `RESUME SESSION` (Mission Amber)                 |
+| Unsaved Navigation Attempt | Inline confirmation strip below action: `Unsaved changes will be lost. Continue?`                                                                               | `YES, CONTINUE` / `CANCEL`                       |
 
 ---
 
@@ -1027,16 +1049,16 @@ On `EXPORT PDF REPORT` click: button transforms to `GENERATING PDF...` with spin
 
 ## 27. Design Constraints
 
-| ID | Constraint | Rationale |
-|---|---|---|
-| DC-01 | Browser-only deployment (Chrome 100+, Firefox 100+, Edge 100+, Safari 16+). No client-side plugins. | Institutional deployment constraint |
-| DC-02 | Graceful degradation on low-bandwidth connections (< 5 Mbps: lower-res imagery; < 1 Mbps: 2D flat map mode available in V2) | Field office accessibility |
-| DC-03 | Desktop/laptop only for V1. Minimum resolution: 1440×900px. No mobile optimization. | Multi-panel and 3D terrain requirements |
-| DC-04 | Dark mode only. Not a user preference — it is the operational environment. No light theme in V1. | EO analyst operational environment standard |
-| DC-05 | All coordinates displayed in WGS84. Per ISRO and Survey of India GIS standards. | Government interoperability requirement |
-| DC-06 | Report PDFs in English only for V1. Vernacular languages deferred to V2. | MVP scope constraint |
-| DC-07 | No tile-based base maps at the top experience level. The Earth is a 3D globe with composite imagery. | Core product identity — not a web map application |
-| DC-08 | Detection overlay system must use both color AND pattern fill (solid/crosshatch/dot/dash) to accommodate color vision deficiency. | Accessibility requirement |
+| ID    | Constraint                                                                                                                        | Rationale                                         |
+| ----- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| DC-01 | Browser-only deployment (Chrome 100+, Firefox 100+, Edge 100+, Safari 16+). No client-side plugins.                               | Institutional deployment constraint               |
+| DC-02 | Graceful degradation on low-bandwidth connections (< 5 Mbps: lower-res imagery; < 1 Mbps: 2D flat map mode available in V2)       | Field office accessibility                        |
+| DC-03 | Desktop/laptop only for V1. Minimum resolution: 1440×900px. No mobile optimization.                                               | Multi-panel and 3D terrain requirements           |
+| DC-04 | Dark mode only. Not a user preference — it is the operational environment. No light theme in V1.                                  | EO analyst operational environment standard       |
+| DC-05 | All coordinates displayed in WGS84. Per ISRO and Survey of India GIS standards.                                                   | Government interoperability requirement           |
+| DC-06 | Report PDFs in English only for V1. Vernacular languages deferred to V2.                                                          | MVP scope constraint                              |
+| DC-07 | No tile-based base maps at the top experience level. The Earth is a 3D globe with composite imagery.                              | Core product identity — not a web map application |
+| DC-08 | Detection overlay system must use both color AND pattern fill (solid/crosshatch/dot/dash) to accommodate color vision deficiency. | Accessibility requirement                         |
 
 ---
 
@@ -1078,70 +1100,70 @@ Minimum body text: 12px (`body-sm`) — ambient information only. Primary body: 
 
 ### 29.1 V1 Feature Set
 
-| Feature | V1 MVP |
-|---|---|
-| 3D Globe with India | ✅ |
-| State and District spatial hierarchy | ✅ |
-| Existing AOI browsing and selection | ✅ |
-| New AOI drawing and naming | ✅ |
-| Satellite imagery loading (Sentinel-2, Sentinel-1) | ✅ |
-| Band composite selection (NR, FC, SWIR, SAR) | ✅ |
-| Land-Cover Change Detection analysis | ✅ |
-| Detection results overlay (4 change types) | ✅ |
-| Severity scoring and display | ✅ |
-| Concession and Protected Area boundary overlays | ✅ |
-| Timeline comparison (scrub, animation, compare mode) | ✅ |
-| Change area timeline chart | ✅ |
-| Case File assembly and PDF export | ✅ |
-| GeoJSON export | ✅ |
-| Alert queue and status management | ✅ |
-| Operational Dashboard (Operations Director) | ✅ |
-| Role-based access (4 roles) | ✅ |
-| Audit trail | ✅ |
-| Session management and 2FA authentication | ✅ |
+| Feature                                              | V1 MVP |
+| ---------------------------------------------------- | ------ |
+| 3D Globe with India                                  | ✅     |
+| State and District spatial hierarchy                 | ✅     |
+| Existing AOI browsing and selection                  | ✅     |
+| New AOI drawing and naming                           | ✅     |
+| Satellite imagery loading (Sentinel-2, Sentinel-1)   | ✅     |
+| Band composite selection (NR, FC, SWIR, SAR)         | ✅     |
+| Land-Cover Change Detection analysis                 | ✅     |
+| Detection results overlay (4 change types)           | ✅     |
+| Severity scoring and display                         | ✅     |
+| Concession and Protected Area boundary overlays      | ✅     |
+| Timeline comparison (scrub, animation, compare mode) | ✅     |
+| Change area timeline chart                           | ✅     |
+| Case File assembly and PDF export                    | ✅     |
+| GeoJSON export                                       | ✅     |
+| Alert queue and status management                    | ✅     |
+| Operational Dashboard (Operations Director)          | ✅     |
+| Role-based access (4 roles)                          | ✅     |
+| Audit trail                                          | ✅     |
+| Session management and 2FA authentication            | ✅     |
 
 ### 29.2 Deferred to V2 / V3
 
-| Feature | Target Version |
-|---|---|
-| Additional analysis types (water quality, NDVI, thermal) | V2 |
-| ResourceSat-2 / Cartosat imagery sources | V2 |
-| Vernacular language report generation | V2 |
-| Predictive risk modeling overlay | V2 |
-| Low-data 2D flat map mode | V2 |
-| Custom report templates per organization | V2 |
-| Multi-country expansion | V2 |
-| Mobile interface | V3 |
-| Collaborative AOI review | V3 |
-| Keyboard-only AOI drawing | V2 |
-| Automated satellite tasking | V3 |
+| Feature                                                  | Target Version |
+| -------------------------------------------------------- | -------------- |
+| Additional analysis types (water quality, NDVI, thermal) | V2             |
+| ResourceSat-2 / Cartosat imagery sources                 | V2             |
+| Vernacular language report generation                    | V2             |
+| Predictive risk modeling overlay                         | V2             |
+| Low-data 2D flat map mode                                | V2             |
+| Custom report templates per organization                 | V2             |
+| Multi-country expansion                                  | V2             |
+| Mobile interface                                         | V3             |
+| Collaborative AOI review                                 | V3             |
+| Keyboard-only AOI drawing                                | V2             |
+| Automated satellite tasking                              | V3             |
 
 ---
 
 ## 30. Screens Included in Version 1
 
-| Screen ID | Name | Primary Actor | Description |
-|---|---|---|---|
-| **SCR-01** | Splash Screen | All | Brand entry, system initialization, animated Earth emergence |
-| **SCR-02** | Mission Control | All | Persistent home environment; live 3D globe with command panels |
-| **SCR-03** | 3D Earth / Zoom to India | Primary Analyst | Camera descends to India; state boundaries emerge |
-| **SCR-04** | State Selection | Primary Analyst | Interactive state boundaries; State Context Card |
-| **SCR-05** | District Selection | Primary Analyst | District boundaries; terrain detail; District Context Panel |
-| **SCR-06** | AOI Selection / Drawing | Primary Analyst | Browse existing AOIs or enter AOI Drawing Mode |
-| **SCR-07** | Satellite Imagery Load | Primary Analyst | Imagery configuration; progressive scene rendering on terrain |
-| **SCR-08** | Run Analysis | Primary Analyst | Analysis configuration panel; scanning animation execution |
-| **SCR-09** | View Results | Primary Analyst | Detection zone overlays on terrain; Results Panel; zone selection |
-| **SCR-10** | Timeline Comparison | Primary Analyst | Timeline panel; scene scrub; compare mode; animation playback |
-| **SCR-11** | Generate Report | Primary Analyst | Report Assembly Panel; live PDF preview; export actions |
-| **SCR-12** | Return to Mission Control | All | Camera retraction sequence; mission cycle completion |
-| **SCR-13** | Alert Queue | Analyst, Director | Sortable, filterable list of all active and historical alerts |
-| **SCR-14** | Case File Archive | Analyst, Director | Archive of compiled case files with filter and search |
-| **SCR-15** | Operational Dashboard | Operations Director | Region-wide metrics; alert trend charts; AOI heat map |
-| **SCR-16** | User Management | System Administrator | Create, modify, deactivate user accounts and roles |
-| **SCR-17** | AOI Management | System Administrator | View, edit, activate, deactivate all registered AOIs |
-| **SCR-18** | Boundary Dataset Management | System Administrator | Import, version, and review concession boundary datasets |
-| **SCR-19** | Settings | System Administrator | Alert thresholds, severity weights, data feed configuration |
-| **SCR-20** | User Profile | All | Personal profile, notification preferences, active sessions |
+| Screen ID  | Name                        | Primary Actor        | Description                                                       |
+| ---------- | --------------------------- | -------------------- | ----------------------------------------------------------------- |
+| **SCR-01** | Splash Screen               | All                  | Brand entry, system initialization, animated Earth emergence      |
+| **SCR-02** | Mission Control             | All                  | Persistent home environment; live 3D globe with command panels    |
+| **SCR-03** | 3D Earth / Zoom to India    | Primary Analyst      | Camera descends to India; state boundaries emerge                 |
+| **SCR-04** | State Selection             | Primary Analyst      | Interactive state boundaries; State Context Card                  |
+| **SCR-05** | District Selection          | Primary Analyst      | District boundaries; terrain detail; District Context Panel       |
+| **SCR-06** | AOI Selection / Drawing     | Primary Analyst      | Browse existing AOIs or enter AOI Drawing Mode                    |
+| **SCR-07** | Satellite Imagery Load      | Primary Analyst      | Imagery configuration; progressive scene rendering on terrain     |
+| **SCR-08** | Run Analysis                | Primary Analyst      | Analysis configuration panel; scanning animation execution        |
+| **SCR-09** | View Results                | Primary Analyst      | Detection zone overlays on terrain; Results Panel; zone selection |
+| **SCR-10** | Timeline Comparison         | Primary Analyst      | Timeline panel; scene scrub; compare mode; animation playback     |
+| **SCR-11** | Generate Report             | Primary Analyst      | Report Assembly Panel; live PDF preview; export actions           |
+| **SCR-12** | Return to Mission Control   | All                  | Camera retraction sequence; mission cycle completion              |
+| **SCR-13** | Alert Queue                 | Analyst, Director    | Sortable, filterable list of all active and historical alerts     |
+| **SCR-14** | Case File Archive           | Analyst, Director    | Archive of compiled case files with filter and search             |
+| **SCR-15** | Operational Dashboard       | Operations Director  | Region-wide metrics; alert trend charts; AOI heat map             |
+| **SCR-16** | User Management             | System Administrator | Create, modify, deactivate user accounts and roles                |
+| **SCR-17** | AOI Management              | System Administrator | View, edit, activate, deactivate all registered AOIs              |
+| **SCR-18** | Boundary Dataset Management | System Administrator | Import, version, and review concession boundary datasets          |
+| **SCR-19** | Settings                    | System Administrator | Alert thresholds, severity weights, data feed configuration       |
+| **SCR-20** | User Profile                | All                  | Personal profile, notification preferences, active sessions       |
 
 ---
 
@@ -1150,10 +1172,11 @@ Minimum body text: 12px (`body-sm`) — ambient information only. Primary body: 
 This PXD constitutes the complete, authoritative design specification for SAT-MSS Version 1. It is sufficient to brief a UI/UX design team on visual production (wireframes, high-fidelity Figma screens) and a frontend engineering team on interaction behavior, animation specifications, layout structure, component design, and spatial navigation logic.
 
 **Recommended next document in design phase:**
+
 > **Wireframe Set (WFS-SATMSS-001):** High-fidelity annotated wireframes for all 20 screens, derived directly from screen specifications in §4 and §30 of this PXD.
 
 ---
 
-*End of Document — PXD-SATMSS-001 v1.0.0*
+_End of Document — PXD-SATMSS-001 v1.0.0_
 
-*This document is subject to design change control. Any modification must be proposed as a Design Change Request, reviewed by the Principal Product Architect and GIS UX Lead, and re-versioned before distribution.*
+_This document is subject to design change control. Any modification must be proposed as a Design Change Request, reviewed by the Principal Product Architect and GIS UX Lead, and re-versioned before distribution._

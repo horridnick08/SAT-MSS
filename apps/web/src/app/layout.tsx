@@ -34,7 +34,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${orbitron.variable} ${jetbrainsMono.variable}`}>
-      <body className="antialiased select-none">
+      <body className="select-none antialiased">
         <Providers>
           <AuthGuard>{children}</AuthGuard>
         </Providers>

@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 export function requestLogger(req: Request, res: Response, next: NextFunction): void {
   const start = Date.now();
   const correlationId = (req.headers['x-correlation-id'] as string) || uuidv4();
-  
+
   // Set on request and response headers
   req.headers['x-correlation-id'] = correlationId;
   res.setHeader('x-correlation-id', correlationId);

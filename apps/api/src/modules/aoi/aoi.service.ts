@@ -68,10 +68,7 @@ export class AoiService {
       .offset(offset);
 
     // Count total for pagination
-    const [{ total }] = await db
-      .select({ total: count() })
-      .from(aois)
-      .where(whereClause);
+    const [{ total }] = await db.select({ total: count() }).from(aois).where(whereClause);
 
     return {
       data: rows,
@@ -146,7 +143,9 @@ export class AoiService {
       });
 
     if (!created) {
-      const err: CustomError = new Error('Failed to create AOI — database did not return a record.');
+      const err: CustomError = new Error(
+        'Failed to create AOI — database did not return a record.',
+      );
       err.statusCode = 500;
       err.code = ERROR_CODES.INTERNAL_ERROR;
       throw err;
@@ -224,12 +223,7 @@ export class AoiService {
       const [existing] = await db
         .select({ id: aois.id })
         .from(aois)
-        .where(
-          and(
-            sql`LOWER(${aois.name}) = LOWER(${body.name})`,
-            sql`${aois.id} != ${id}`,
-          ),
-        )
+        .where(and(sql`LOWER(${aois.name}) = LOWER(${body.name})`, sql`${aois.id} != ${id}`))
         .limit(1);
 
       if (existing) {
@@ -250,24 +244,20 @@ export class AoiService {
     if (body.isActive !== undefined) updatePayload.isActive = body.isActive;
     if (body.notes !== undefined) updatePayload.notes = body.notes;
 
-    const [updated] = await db
-      .update(aois)
-      .set(updatePayload)
-      .where(eq(aois.id, id))
-      .returning({
-        id: aois.id,
-        name: aois.name,
-        stateCode: aois.stateCode,
-        stateName: aois.stateName,
-        districtName: aois.districtName,
-        priority: aois.priority,
-        isActive: aois.isActive,
-        notes: aois.notes,
-        areaHa: aois.areaHa,
-        createdBy: aois.createdBy,
-        createdAt: aois.createdAt,
-        updatedAt: aois.updatedAt,
-      });
+    const [updated] = await db.update(aois).set(updatePayload).where(eq(aois.id, id)).returning({
+      id: aois.id,
+      name: aois.name,
+      stateCode: aois.stateCode,
+      stateName: aois.stateName,
+      districtName: aois.districtName,
+      priority: aois.priority,
+      isActive: aois.isActive,
+      notes: aois.notes,
+      areaHa: aois.areaHa,
+      createdBy: aois.createdBy,
+      createdAt: aois.createdAt,
+      updatedAt: aois.updatedAt,
+    });
 
     // Fetch geometry for response
     const geomResult = await db.execute<{ geom: object }>(

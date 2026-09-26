@@ -36,7 +36,7 @@ export default function GlobeViewer({ children }: GlobeViewerProps) {
   useEffect(() => {
     if (viewerRef.current?.cesiumElement) {
       const viewer = viewerRef.current.cesiumElement;
-      
+
       // Set initial view to India
       viewer.camera.setView({
         destination: INDIA_POSITION,
@@ -92,7 +92,7 @@ export default function GlobeViewer({ children }: GlobeViewerProps) {
         subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
         maximumLevel: 21,
         credit: 'Google Earth / Satellite',
-      })
+      }),
     );
   }, []);
 
@@ -129,7 +129,7 @@ export default function GlobeViewer({ children }: GlobeViewerProps) {
   }
 
   return (
-    <div className="relative w-full h-full bg-[#06080D] overflow-hidden">
+    <div className="relative h-full w-full overflow-hidden bg-[#06080D]">
       {/* Dynamic Globe Component */}
       <Viewer {...viewerProps}>
         <CesiumEventManager />
@@ -140,38 +140,38 @@ export default function GlobeViewer({ children }: GlobeViewerProps) {
 
       {/* Floating HUD Controller HUD overlay (Enterprise GIS style) */}
       <div className="absolute right-6 top-6 z-20 flex flex-col gap-3">
-        <div className="flex flex-col rounded-lg border border-white/5 bg-[#0D1117]/85 backdrop-blur-md p-1.5 shadow-2xl">
+        <div className="flex flex-col rounded-lg border border-white/5 bg-[#0D1117]/85 p-1.5 shadow-2xl backdrop-blur-md">
           <button
             onClick={handleZoomIn}
             title="Zoom In"
-            className="flex h-9 w-9 items-center justify-center rounded-md text-[#8A9BBB] hover:bg-white/5 hover:text-[#E8EAF0] active:scale-95 transition-all"
+            className="flex h-9 w-9 items-center justify-center rounded-md text-[#8A9BBB] transition-all hover:bg-white/5 hover:text-[#E8EAF0] active:scale-95"
           >
             <ZoomIn className="h-4.5 w-4.5" />
           </button>
-          
-          <div className="h-px bg-white/5 my-1" />
+
+          <div className="my-1 h-px bg-white/5" />
 
           <button
             onClick={handleZoomOut}
             title="Zoom Out"
-            className="flex h-9 w-9 items-center justify-center rounded-md text-[#8A9BBB] hover:bg-white/5 hover:text-[#E8EAF0] active:scale-95 transition-all"
+            className="flex h-9 w-9 items-center justify-center rounded-md text-[#8A9BBB] transition-all hover:bg-white/5 hover:text-[#E8EAF0] active:scale-95"
           >
             <ZoomOut className="h-4.5 w-4.5" />
           </button>
 
-          <div className="h-px bg-white/5 my-1" />
+          <div className="my-1 h-px bg-white/5" />
 
           <button
             onClick={handleResetCamera}
             title="Reset Camera (India)"
-            className="flex h-9 w-9 items-center justify-center rounded-md text-[#8A9BBB] hover:bg-white/5 hover:text-[#E8EAF0] active:scale-95 transition-all"
+            className="flex h-9 w-9 items-center justify-center rounded-md text-[#8A9BBB] transition-all hover:bg-white/5 hover:text-[#E8EAF0] active:scale-95"
           >
             <RotateCcw className="h-4.5 w-4.5" />
           </button>
         </div>
 
-        <div className="flex rounded-lg border border-white/5 bg-[#0D1117]/85 backdrop-blur-md p-2 text-[10px] font-mono tracking-wider text-[#8A9BBB] shadow-2xl items-center gap-1.5">
-          <Compass className="h-3.5 w-3.5 text-[#E88C30] animate-pulse" />
+        <div className="flex items-center gap-1.5 rounded-lg border border-white/5 bg-[#0D1117]/85 p-2 font-mono text-[10px] tracking-wider text-[#8A9BBB] shadow-2xl backdrop-blur-md">
+          <Compass className="h-3.5 w-3.5 animate-pulse text-[#E88C30]" />
           <span>WGS84 EPSG:4326</span>
         </div>
       </div>

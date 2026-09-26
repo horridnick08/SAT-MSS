@@ -100,11 +100,7 @@ export default function AoiVertexEditor() {
   return (
     <>
       {activePoints.map((point, index) => (
-        <Entity
-          key={`edit-vertex-${index}`}
-          id={`edit-vertex-${index}`}
-          position={point}
-        >
+        <Entity key={`edit-vertex-${index}`} id={`edit-vertex-${index}`} position={point}>
           <PointGraphics
             pixelSize={12}
             color={handleColor}

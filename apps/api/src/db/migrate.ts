@@ -17,7 +17,9 @@ async function runMigrations(): Promise<void> {
     });
     logger.info('Database migrations completed successfully');
   } catch (error) {
-    logger.error('Failed to run database migrations', { error: error instanceof Error ? { message: error.message, stack: error.stack } : error });
+    logger.error('Failed to run database migrations', {
+      error: error instanceof Error ? { message: error.message, stack: error.stack } : error,
+    });
     process.exit(1);
   } finally {
     await pool.end();

@@ -6,7 +6,7 @@ export class AuthController {
     try {
       const { email, password } = req.body;
       const result = await AuthService.login(email, password);
-      
+
       // Store refreshToken in HTTP-only cookie for silent refresh
       res.cookie('refreshToken', result.refreshToken, {
         httpOnly: true,

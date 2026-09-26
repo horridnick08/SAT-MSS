@@ -14,34 +14,56 @@ export default function AoiDrawingLayer() {
   const validationError = useAoiStore((state) => state.validationError);
 
   // Cache immutable Cesium objects to avoid constant re-allocations
-  const priorityMaterials = useMemo(() => ({
-    HIGH: Cesium.Color.fromCssColorString('#C94040').withAlpha(0.15),
-    MEDIUM: Cesium.Color.fromCssColorString('#E88C30').withAlpha(0.15),
-    LOW: Cesium.Color.fromCssColorString('#2D8653').withAlpha(0.15),
-  }), []);
+  const priorityMaterials = useMemo(
+    () => ({
+      HIGH: Cesium.Color.fromCssColorString('#C94040').withAlpha(0.15),
+      MEDIUM: Cesium.Color.fromCssColorString('#E88C30').withAlpha(0.15),
+      LOW: Cesium.Color.fromCssColorString('#2D8653').withAlpha(0.15),
+    }),
+    [],
+  );
 
-  const priorityOutlineColors = useMemo(() => ({
-    HIGH: Cesium.Color.fromCssColorString('#C94040'),
-    MEDIUM: Cesium.Color.fromCssColorString('#E88C30'),
-    LOW: Cesium.Color.fromCssColorString('#2D8653'),
-  }), []);
+  const priorityOutlineColors = useMemo(
+    () => ({
+      HIGH: Cesium.Color.fromCssColorString('#C94040'),
+      MEDIUM: Cesium.Color.fromCssColorString('#E88C30'),
+      LOW: Cesium.Color.fromCssColorString('#2D8653'),
+    }),
+    [],
+  );
 
-  const defaultMaterial = useMemo(() => Cesium.Color.fromCssColorString('#1AABB0').withAlpha(0.15), []);
+  const defaultMaterial = useMemo(
+    () => Cesium.Color.fromCssColorString('#1AABB0').withAlpha(0.15),
+    [],
+  );
   const defaultOutlineColor = useMemo(() => Cesium.Color.fromCssColorString('#1AABB0'), []);
 
-  const editingMaterial = useMemo(() => Cesium.Color.fromCssColorString('#E88C30').withAlpha(0.15), []);
+  const editingMaterial = useMemo(
+    () => Cesium.Color.fromCssColorString('#E88C30').withAlpha(0.15),
+    [],
+  );
   const editingOutlineColor = useMemo(() => Cesium.Color.fromCssColorString('#E88C30'), []);
 
-  const errorMaterial = useMemo(() => Cesium.Color.fromCssColorString('#C94040').withAlpha(0.15), []);
+  const errorMaterial = useMemo(
+    () => Cesium.Color.fromCssColorString('#C94040').withAlpha(0.15),
+    [],
+  );
   const errorOutlineColor = useMemo(() => Cesium.Color.fromCssColorString('#C94040'), []);
 
-  const activeMaterial = useMemo(() => Cesium.Color.fromCssColorString('#E88C30').withAlpha(0.15), []);
+  const activeMaterial = useMemo(
+    () => Cesium.Color.fromCssColorString('#E88C30').withAlpha(0.15),
+    [],
+  );
   const vertexColor = useMemo(() => Cesium.Color.fromCssColorString('#E88C30'), []);
   const vertexOutlineColor = useMemo(() => Cesium.Color.fromCssColorString('#FFFFFF'), []);
-  const activePolylineMaterial = useMemo(() => new Cesium.PolylineDashMaterialProperty({
-    color: Cesium.Color.fromCssColorString('#E88C30'),
-    dashLength: 16,
-  }), []);
+  const activePolylineMaterial = useMemo(
+    () =>
+      new Cesium.PolylineDashMaterialProperty({
+        color: Cesium.Color.fromCssColorString('#E88C30'),
+        dashLength: 16,
+      }),
+    [],
+  );
 
   // 1. Render finalized, in-memory AOI polygons using precomputed center coordinates
   const renderedSavedAois = aois.map((aoi) => {
@@ -50,12 +72,16 @@ export default function AoiDrawingLayer() {
     const aoiPriority = aoi.priority ?? 'MEDIUM';
 
     const material = isSelected
-      ? (isInvalid ? errorMaterial : editingMaterial)
-      : (priorityMaterials[aoiPriority] || defaultMaterial);
+      ? isInvalid
+        ? errorMaterial
+        : editingMaterial
+      : priorityMaterials[aoiPriority] || defaultMaterial;
 
     const outlineColor = isSelected
-      ? (isInvalid ? errorOutlineColor : editingOutlineColor)
-      : (priorityOutlineColors[aoiPriority] || defaultOutlineColor);
+      ? isInvalid
+        ? errorOutlineColor
+        : editingOutlineColor
+      : priorityOutlineColors[aoiPriority] || defaultOutlineColor;
 
     return (
       <Entity
@@ -99,11 +125,7 @@ export default function AoiDrawingLayer() {
           {/* Active polygon area preview */}
           {showPolygonPreview && (
             <Entity id="active-aoi-polygon-preview">
-              <PolygonGraphics
-                hierarchy={activePoints}
-                material={activeMaterial}
-                height={0}
-              />
+              <PolygonGraphics hierarchy={activePoints} material={activeMaterial} height={0} />
             </Entity>
           )}
 
@@ -120,10 +142,7 @@ export default function AoiDrawingLayer() {
 
           {/* Vertex point markers */}
           {activePoints.map((point, index) => (
-            <Entity
-              key={`drawing-vertex-${index}`}
-              position={point}
-            >
+            <Entity key={`drawing-vertex-${index}`} position={point}>
               <PointGraphics
                 pixelSize={8}
                 color={vertexColor}

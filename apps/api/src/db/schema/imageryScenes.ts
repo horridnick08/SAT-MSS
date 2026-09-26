@@ -4,9 +4,14 @@ import { geometryPolygon } from './customTypes.js';
 import { aois } from './aois.js';
 
 export const imageryScenes = pgTable('imagery_scenes', {
-  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
-  aoiId: uuid('aoi_id').notNull().references(() => aois.id, { onDelete: 'restrict' }),
-  satelliteSource: varchar('satellite_source', { length: 20 }).notNull()
+  id: uuid('id')
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  aoiId: uuid('aoi_id')
+    .notNull()
+    .references(() => aois.id, { onDelete: 'restrict' }),
+  satelliteSource: varchar('satellite_source', { length: 20 })
+    .notNull()
     .$type<'SENTINEL_2A' | 'SENTINEL_2B' | 'SENTINEL_1A' | 'SENTINEL_1B'>(),
   tileId: varchar('tile_id', { length: 50 }).notNull(),
   acquisitionDate: varchar('acquisition_date', { length: 10 }).notNull(), // YYYY-MM-DD

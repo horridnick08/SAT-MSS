@@ -4,8 +4,12 @@ import { users } from './users.js';
 import { alerts } from './alerts.js';
 
 export const notifications = pgTable('notifications', {
-  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
-  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'restrict' }),
+  id: uuid('id')
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  userId: uuid('user_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'restrict' }),
   alertId: uuid('alert_id').references(() => alerts.id, { onDelete: 'restrict' }),
   type: varchar('type', { length: 20 }).notNull().$type<'IN_PLATFORM' | 'EMAIL'>(),
   title: varchar('title', { length: 200 }).notNull(),

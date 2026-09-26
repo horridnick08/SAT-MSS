@@ -17,7 +17,11 @@ export function authorize(minimumRole: UserRole) {
     const userRoleIndex = ROLE_HIERARCHY[req.user.role];
     const minimumRoleIndex = ROLE_HIERARCHY[minimumRole];
 
-    if (userRoleIndex === undefined || minimumRoleIndex === undefined || userRoleIndex < minimumRoleIndex) {
+    if (
+      userRoleIndex === undefined ||
+      minimumRoleIndex === undefined ||
+      userRoleIndex < minimumRoleIndex
+    ) {
       res.status(403).json({
         error: {
           code: ERROR_CODES.FORBIDDEN,

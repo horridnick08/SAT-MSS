@@ -20,6 +20,8 @@ export default function LoginPage() {
   } = useForm<ILoginRequest>();
 
   const onSubmit = async (data: ILoginRequest) => {
+    console.log("LOGIN CLICKED");
+    console.log(data);
     setIsLoading(true);
     setErrorMessage(null);
     try {

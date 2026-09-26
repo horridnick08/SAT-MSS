@@ -67,6 +67,7 @@ export default function AoiDrawingLayer() {
         <PolygonGraphics
           hierarchy={aoi.points}
           material={material}
+          height={0}
           outline={true}
           outlineColor={outlineColor}
           outlineWidth={isSelected ? 3 : 2}
@@ -101,6 +102,7 @@ export default function AoiDrawingLayer() {
               <PolygonGraphics
                 hierarchy={activePoints}
                 material={activeMaterial}
+                height={0}
               />
             </Entity>
           )}

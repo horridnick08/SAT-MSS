@@ -43,10 +43,13 @@ export default function GlobeViewer({ children }: GlobeViewerProps) {
         orientation: INDIA_ORIENTATION,
       });
 
-      // Enable Day/Night lighting (Sun light source tracking)
-      viewer.scene.globe.enableLighting = true;
-      viewer.scene.highDynamicRange = true;
+      // Disable Day/Night lighting so satellite imagery is crisp, bright, and clearly visible at all times
+      viewer.scene.globe.enableLighting = false;
+      viewer.scene.highDynamicRange = false;
       viewer.scene.postProcessStages.fxaa.enabled = true;
+      if (viewer.scene.fog) {
+        viewer.scene.fog.enabled = false;
+      }
     }
   }, []);
 
@@ -76,24 +79,59 @@ export default function GlobeViewer({ children }: GlobeViewerProps) {
     }
   };
 
+  // High-resolution Google Satellite imagery (no 'data not available' issues on zoom)
+  const baseLayer = React.useMemo(() => {
+    if (typeof window === 'undefined') return undefined;
+    const token = process.env.NEXT_PUBLIC_CESIUM_ION_TOKEN;
+    if (token && token.trim().length > 0) {
+      return undefined;
+    }
+    return new Cesium.ImageryLayer(
+      new Cesium.UrlTemplateImageryProvider({
+        url: 'https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+        maximumLevel: 21,
+        credit: 'Google Earth / Satellite',
+      })
+    );
+  }, []);
+
+  const terrainProvider = React.useMemo(() => {
+    if (typeof window === 'undefined') return undefined;
+    const token = process.env.NEXT_PUBLIC_CESIUM_ION_TOKEN;
+    if (token && token.trim().length > 0) {
+      return undefined;
+    }
+    return new Cesium.EllipsoidTerrainProvider();
+  }, []);
+
+  const viewerProps: Record<string, any> = {
+    ref: viewerRef,
+    full: true,
+    timeline: false,
+    animation: false,
+    geocoder: false,
+    baseLayerPicker: false,
+    sceneModePicker: false,
+    navigationHelpButton: false,
+    infoBox: false,
+    selectionIndicator: false,
+    fullscreenButton: false,
+    projectionPicker: false,
+    className: 'w-full h-full [&_.cesium-viewer-bottom]:hidden',
+  };
+
+  if (baseLayer) {
+    viewerProps.baseLayer = baseLayer;
+  }
+  if (terrainProvider) {
+    viewerProps.terrainProvider = terrainProvider;
+  }
+
   return (
     <div className="relative w-full h-full bg-[#06080D] overflow-hidden">
       {/* Dynamic Globe Component */}
-      <Viewer
-        ref={viewerRef}
-        full
-        timeline={false}
-        animation={false}
-        geocoder={false}
-        baseLayerPicker={false}
-        sceneModePicker={false}
-        navigationHelpButton={false}
-        infoBox={false}
-        selectionIndicator={false}
-        fullscreenButton={false}
-        projectionPicker={false}
-        className="w-full h-full [&_.cesium-viewer-bottom]:hidden"
-      >
+      <Viewer {...viewerProps}>
         <CesiumEventManager />
         <AoiDrawingLayer />
         <AoiVertexEditor />

@@ -9,3 +9,6 @@ allowBuilds:
   msgpackr-extract: true
   puppeteer: true
   unrs-resolver: true
+
+overrides:
+  '@spz-loader/core': 0.3.0
